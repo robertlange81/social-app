@@ -27,27 +27,29 @@
 <script>
 // COMPONENTS
 import AppEditForm from '@/components/Profile/AppEditForm.vue'
-import AppEditFormVue from './AppEditForm.vue';
+// eslint-disable-next-line no-unused-vars
+import AppEditFormVue from './AppEditForm.vue'
 
 // VUEX
-import { mdiPencil } from '@mdi/js';
-import { mdiPencilOutline } from '@mdi/js';
+import { mdiPencil } from '@mdi/js'
+// eslint-disable-next-line no-unused-vars
+// import { mdiPencilOutline } from '@mdi/js'
 
 export default {
   components: {
-        AppEditForm
+    AppEditForm
   },
   props: {
-      data: {
-          type: Object,
-          required: true
-      }
+    data: {
+      type: Object,
+      required: true
+    }
   },
   data: () => ({
-      dialog: false,
-      svg: {
-          pencil: mdiPencil
-      },
-  }),
+    dialog: false,
+    svg: {
+      pencil: mdiPencil
+    }
+  })
 }
 </script>

@@ -12,7 +12,7 @@
         </v-card-text>
         <v-card-actions>
         <div class="flex-grow-1"></div>
-            <v-btn color="#32BCC3" :disabled="loadingUser" text 
+            <v-btn color="#32BCC3" :disabled="loadingUser" text
             @click="$emit('click')">
                 Close
             </v-btn>
@@ -23,22 +23,22 @@
     </form>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 export default {
-    data: () => ({
-        body: ''
-    }),
-    methods: {
-        handlePostSubmit() {
-            this.$store.dispatch('POST_NEW_SCREAM', { body: this.body })
-            .then(() => {
-                this.body = '';
-                this.$emit('click')
-            })
-        }
-    },
-    computed: {
-        ...mapGetters(['loadingUser'])
-    },
+  data: () => ({
+    body: ''
+  }),
+  methods: {
+    handlePostSubmit () {
+      this.$store.dispatch('POST_NEW_SCREAM', { body: this.body })
+        .then(() => {
+          this.body = ''
+          this.$emit('click')
+        })
+    }
+  },
+  computed: {
+    ...mapGetters(['loadingUser'])
+  }
 }
 </script>

@@ -19,7 +19,6 @@
       </v-col>
       <!------------------------ END SCREAM LIST ----------------------->
 
-
       <!------------------------ PROFILE ----------------------->
       <v-col cols="12" sm="4" order="-1" order-sm="2" >
           <v-card min-height="300" min-width="150" elevation="0" >
@@ -35,34 +34,36 @@
 
 <script>
 // COMPONENTS
-import AppPerfilContentLoader from '@/components/Loaders/AppPerfilLoader.vue';
-import AppScreamContentLoader from '@/components/Loaders/AppScreamLoader.vue';
-import AppProfile from '@/components/Profile/AppProfile.vue';
-import AppDisabledProfile from '@/components/Profile/AppDisabledProfile.vue';
-import AppScreamCard from '@/components/Scream/AppScreamCard.vue';
+import AppPerfilContentLoader from '@/components/Loaders/AppPerfilLoader.vue'
+import AppScreamContentLoader from '@/components/Loaders/AppScreamLoader.vue'
+import AppProfile from '@/components/Profile/AppProfile.vue'
+import AppDisabledProfile from '@/components/Profile/AppDisabledProfile.vue'
+import AppScreamCard from '@/components/Scream/AppScreamCard.vue'
 
 // VUEX
-import { mapGetters } from 'vuex';
+// eslint-disable-next-line import/no-duplicates
+import { mapGetters } from 'vuex'
+// eslint-disable-next-line no-unused-vars,import/no-duplicates
 import { mapState } from 'vuex'
 
 export default {
-    components: {
-        AppPerfilContentLoader,
-        AppScreamContentLoader,
-        AppProfile,
-        AppDisabledProfile,
-        AppScreamCard
-    },
-    created() {
-        window.scrollTo(0, 0);
-    },
-    computed: {
-        ...mapGetters(['loadingUI', 'userSelected']),
-        userScreams() {
-          return this.$store.state.screams.filter(scream => scream.userHandle === this.$route.params.handle
-          )
-        }
-    },
+  components: {
+    AppPerfilContentLoader,
+    AppScreamContentLoader,
+    AppProfile,
+    // eslint-disable-next-line vue/no-unused-components
+    AppDisabledProfile,
+    AppScreamCard
+  },
+  created () {
+    window.scrollTo(0, 0)
+  },
+  computed: {
+    ...mapGetters(['loadingUI', 'userSelected']),
+    userScreams () {
+      return this.$store.state.screams.filter(scream => scream.userHandle === this.$route.params.handle
+      )
+    }
+  }
 }
 </script>
-

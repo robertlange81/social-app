@@ -37,36 +37,37 @@
 
 <script>
 // COMPONENTS
-import AppNotificationItem from '@/components/Notifications/AppNotificationItem.vue';
+import AppNotificationItem from '@/components/Notifications/AppNotificationItem.vue'
 
 // VUEX
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiBellOutline } from '@mdi/js';
+import { mdiBellOutline } from '@mdi/js'
 
 export default {
-  components:{
+  components: {
     AppNotificationItem
   },
   data: () => ({
-      menu: false,
-      svg: {
-          bell: mdiBellOutline,
-      },
+    menu: false,
+    svg: {
+      bell: mdiBellOutline
+    }
   }),
   methods: {
-    openNotifications() {
-      if(window.location.pathname === '/') {
+    // eslint-disable-next-line no-irregular-whitespace
+    openNotifications () {
+      if (window.location.pathname === '/') {
         this.menu = true
-      }
-      else {
+        // eslint-disable-next-line no-irregular-whitespace
+      } else {
         this.$router.push('/notifications')
       }
     }
   },
   computed: {
-      ...mapGetters(['userNotifications', 'unreadNotifications', 'isAuthenticated']),
+    ...mapGetters(['userNotifications', 'unreadNotifications', 'isAuthenticated'])
   }
 }
 </script>

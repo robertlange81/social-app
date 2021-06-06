@@ -27,36 +27,39 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 export default {
-    props: {
-        data: {
-            type: Object,
-            required: true
-        }
-    },
-    data: () => ({
-        userDetails: {
-            bio: '',
-            website: '',
-            location: ''
-        }
-    }),
-    methods: {
-        handleSubmit() {
-            this.$store.dispatch('EDIT_USER_DETAILS', this.userDetails)
-            .then(() => {
-                this.$emit('click')
-            })
-        }
-    },
-    mounted() {
-        this.data.bio ? this.userDetails.bio = this.data.bio : '';
-        this.data.website ? this.userDetails.website = this.data.website : '';
-        this.data.location ? this.userDetails.location = this.data.location : '';
-    },
-    computed: {
-        ...mapGetters(['loadingForm'])
+  props: {
+    data: {
+      type: Object,
+      required: true
     }
+  },
+  data: () => ({
+    userDetails: {
+      bio: '',
+      website: '',
+      location: ''
+    }
+  }),
+  methods: {
+    handleSubmit () {
+      this.$store.dispatch('EDIT_USER_DETAILS', this.userDetails)
+        .then(() => {
+          this.$emit('click')
+        })
+    }
+  },
+  mounted () {
+    // eslint-disable-next-line no-unused-expressions
+    this.data.bio ? this.userDetails.bio = this.data.bio : ''
+    // eslint-disable-next-line no-unused-expressions
+    this.data.website ? this.userDetails.website = this.data.website : ''
+    // eslint-disable-next-line no-unused-expressions
+    this.data.location ? this.userDetails.location = this.data.location : ''
+  },
+  computed: {
+    ...mapGetters(['loadingForm'])
+  }
 }
 </script>

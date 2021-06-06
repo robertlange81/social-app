@@ -77,29 +77,28 @@
 
 <script>
 // COMPONENTS
-import AppCommentProfile from '@/components/Scream/AppCommentProfile.vue';
-import AppNewCommentForm from '@/components/Scream/AppNewCommentForm.vue';
+import AppCommentProfile from '@/components/Scream/AppCommentProfile.vue'
+import AppNewCommentForm from '@/components/Scream/AppNewCommentForm.vue'
 
 // SVG ICONS
-import { mdiCommentMultipleOutline, mdiHeartOutline, mdiHeart } from '@mdi/js';
+import { mdiCommentMultipleOutline, mdiHeartOutline, mdiHeart } from '@mdi/js'
 
 // VUEX
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 // MIXINS
-import { likeMethod } from '@/mixins/mixins';
-import { setTimeout } from 'timers';
+import { likeMethod } from '@/mixins/mixins'
+import { setTimeout } from 'timers'
 
 export default {
   components: {
     AppCommentProfile,
-    AppCommentProfile,
     AppNewCommentForm
   },
   props: {
-      data: {
-          type: Object
-      }
+    data: {
+      type: Object
+    }
   },
   mixins: [likeMethod],
   data () {
@@ -113,33 +112,33 @@ export default {
     }
   },
   methods: {
-    getScream() {
+    getScream () {
       this.dialog = true
       setTimeout(() => {
         this.$store.dispatch('GET_SCREAM', this.data.screamId)
       }, 300)
     },
-    closeModal() {
+    closeModal () {
       this.dialog = false
       setTimeout(() => {
-        this.$store.dispatch('CLEAN_SELECTED_SCREAM');
+        this.$store.dispatch('CLEAN_SELECTED_SCREAM')
       }, 100)
     }
   },
   computed: {
     ...mapGetters(['isAuthenticated', 'userLikes', 'userCredentials', 'loadingUser', 'selectedScream']),
-    isLiked() {
-      if(this.isAuthenticated && this.userLikes) {
+    isLiked () {
+      if (this.isAuthenticated && this.userLikes) {
         let findScreamLiked = this.userLikes.findIndex(scream => scream.screamId === this.data.screamId)
-        return findScreamLiked >= 0 ? true : false;
+        return findScreamLiked >= 0
       }
-      return false;
+      return false
     }
   },
-  mounted() {
+  mounted () {
     // OPEN DIALOG WHEN NOTIFICATION IS ACTIVE
-    if(this.data.screamId === this.$route.params.screamId) {
-      this.getScream();
+    if (this.data.screamId === this.$route.params.screamId) {
+      this.getScream()
     }
   }
 }

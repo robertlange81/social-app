@@ -39,14 +39,14 @@
 
 <script>
 // COMPONENTS
-import AppPerfilContentLoader from '@/components/Loaders/AppPerfilLoader.vue';
-import AppScreamContentLoader from '@/components/Loaders/AppScreamLoader.vue';
-import AppProfile from '@/components/Profile/AppProfile.vue';
-import AppDisabledProfile from '@/components/Profile/AppDisabledProfile.vue';
-import AppScreamCard from '@/components/Scream/AppScreamCard.vue';
+import AppPerfilContentLoader from '@/components/Loaders/AppPerfilLoader.vue'
+import AppScreamContentLoader from '@/components/Loaders/AppScreamLoader.vue'
+import AppProfile from '@/components/Profile/AppProfile.vue'
+import AppDisabledProfile from '@/components/Profile/AppDisabledProfile.vue'
+import AppScreamCard from '@/components/Scream/AppScreamCard.vue'
 
-//VUEX
-import { mapState, mapGetters } from 'vuex';
+// VUEX
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -54,12 +54,11 @@ export default {
     AppProfile,
     AppDisabledProfile,
     AppPerfilContentLoader,
-    AppScreamContentLoader,
+    AppScreamContentLoader
   },
   computed: {
-    ...mapState(["screams", "status"]),
-    ...mapGetters(["userCredentials", 'screamList', 'loadingUI', 'isAuthenticated'])
+    ...mapState(['screams', 'status']),
+    ...mapGetters(['userCredentials', 'screamList', 'loadingUI', 'isAuthenticated'])
   }
-};
+}
 </script>
-

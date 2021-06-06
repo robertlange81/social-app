@@ -9,17 +9,17 @@
 
 <script>
 // COMPONENTS
-import Navbar from './components/Layout/AppNavbar';
+import Navbar from './components/Layout/AppNavbar'
 
 export default {
   name: 'App',
   components: {
     Navbar
   },
-  mounted() {
+  mounted () {
     this.$store.dispatch('GET_SCREAMS')
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -28,5 +28,3 @@ export default {
   background: #d6dfe2;
 }
 </style>
-
-

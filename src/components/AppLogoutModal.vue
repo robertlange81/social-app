@@ -23,7 +23,7 @@
             Yes
           </v-btn>
         </v-card-actions>
-        
+
       </v-card>
     </v-dialog>
   </div>
@@ -31,10 +31,10 @@
 
 <script>
 // VUEX
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiExitToApp } from '@mdi/js';
+import { mdiExitToApp } from '@mdi/js'
 
 export default {
   props: {
@@ -46,22 +46,21 @@ export default {
     return {
       dialog: false,
       svg: {
-        logout: mdiExitToApp,
+        logout: mdiExitToApp
       }
     }
   },
   methods: {
-      logout() {
-          this.$store.dispatch('LOGOUT_USER')
-          .then(() => {
-            this.dialog = false
-            this.$router.push('/login')
-          })
-      }
+    logout () {
+      this.$store.dispatch('LOGOUT_USER')
+        .then(() => {
+          this.dialog = false
+          this.$router.push('/login')
+        })
+    }
   },
   computed: {
     ...mapGetters(['loadingUser'])
   }
 }
 </script>
-

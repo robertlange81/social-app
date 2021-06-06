@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import { mdiAccount } from '@mdi/js';
+import { mdiAccount } from '@mdi/js'
 
 export default {
-    props: ['name'],
-    data: () => ({
-        avatar: mdiAccount
-    })
+  props: ['name'],
+  data: () => ({
+    avatar: mdiAccount
+  })
 }
 </script>

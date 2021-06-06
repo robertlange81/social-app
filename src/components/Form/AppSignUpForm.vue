@@ -60,51 +60,53 @@
 </template>
 
 <script>
-//ICONS
-import { mdiEyeOutline } from '@mdi/js';
-import { mdiEyeOffOutline } from '@mdi/js';
+// ICONS
+// eslint-disable-next-line import/no-duplicates
+import { mdiEyeOutline } from '@mdi/js'
+// eslint-disable-next-line import/no-duplicates
+import { mdiEyeOffOutline } from '@mdi/js'
 
-//MIXINS
-import { reset } from '@/mixins/mixins';
+// MIXINS
+import { reset } from '@/mixins/mixins'
 
-//VUEX
-import { mapGetters } from 'vuex';
+// VUEX
+import { mapGetters } from 'vuex'
 
 export default {
-    mixins: [reset],
-    data: () => ({
-        showPassword: false,
-        formNewUser: {
-            email: '',
-            password: '',
-            confirmPassword: '',
-            handle : '',
-        },
-        emailRules: [
-            v => !!v || 'E-mail is required',
-            v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ],
-        handleRules: [
-            v => !!v || 'Name is required'
-        ],
-        svg: {
-            visibility: mdiEyeOutline,
-            visibilityOff: mdiEyeOffOutline,
-        },
-    }),
-    methods: {
-        loginHandlerSubmit() {
-            this.$store.dispatch('SIGN_UP', this.formNewUser)
-            .then(() => {
-                this.$router.push({ name: 'home'});
-            })
-        },
+  mixins: [reset],
+  data: () => ({
+    showPassword: false,
+    formNewUser: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      handle: ''
     },
-    computed: {
-        ...mapGetters(['errors', 'loadingForm'])
-    },
-    beforeDestroy() {
-        this.$store.dispatch('CLEAR_ERROR')
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+    ],
+    handleRules: [
+      v => !!v || 'Name is required'
+    ],
+    svg: {
+      visibility: mdiEyeOutline,
+      visibilityOff: mdiEyeOffOutline
     }
+  }),
+  methods: {
+    loginHandlerSubmit () {
+      this.$store.dispatch('SIGN_UP', this.formNewUser)
+        .then(() => {
+          this.$router.push({ name: 'home' })
+        })
+    }
+  },
+  computed: {
+    ...mapGetters(['errors', 'loadingForm'])
+  },
+  beforeDestroy () {
+    this.$store.dispatch('CLEAR_ERROR')
+  }
 }
 </script>

@@ -40,48 +40,50 @@
 </template>
 
 <script>
+/* eslint-disable standard/object-curly-even-spacing */
+
 // MIXINS
-import { reset } from '@/mixins/mixins';
+import { reset } from '@/mixins/mixins'
 
 // SVG ICONS
-import { mdiEyeOutline, mdiEyeOffOutline  } from '@mdi/js';
+import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 
-//VUEX
-import { mapGetters } from 'vuex';
+// VUEX
+import { mapGetters } from 'vuex'
 
 export default {
-    mixins: [reset],
-    data: () => ({
-        showPassword: false,
-        loginUser: {
-            email: '',
-            password: ''
-        },
-        emailRules: [
-            v => !!v || 'E-mail is required',
-            v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ],
-        svg: {
-            visibility: mdiEyeOutline,
-            visibilityOff: mdiEyeOffOutline,
-        },
-    }),
-    methods: {
-        loginHandlerSubmit() {
-            this.$store.dispatch('SIGN_IN', {
-                email: this.loginUser.email,
-                password: this.loginUser.password
-            })
-            .then(() => {
-                this.$router.push({name: 'home'});
-            })
-        },
+  mixins: [reset],
+  data: () => ({
+    showPassword: false,
+    loginUser: {
+      email: '',
+      password: ''
     },
-    computed: {
-        ...mapGetters(['errors', 'loadingForm'])
-    },
-    beforeDestroy() {
-        this.$store.dispatch('CLEAR_ERROR')
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+    ],
+    svg: {
+      visibility: mdiEyeOutline,
+      visibilityOff: mdiEyeOffOutline
     }
+  }),
+  methods: {
+    loginHandlerSubmit () {
+      this.$store.dispatch('SIGN_IN', {
+        email: this.loginUser.email,
+        password: this.loginUser.password
+      })
+        .then(() => {
+          this.$router.push({ name: 'home' })
+        })
+    }
+  },
+  computed: {
+    ...mapGetters(['errors', 'loadingForm'])
+  },
+  beforeDestroy () {
+    this.$store.dispatch('CLEAR_ERROR')
+  }
 }
 </script>

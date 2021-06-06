@@ -21,30 +21,30 @@
                 </v-card>
                 </template>
             </v-col>
-        </v-row>        
+        </v-row>
     </v-container>
 </template>
 
 <script>
 // COMPONENTS
-import AppNotificationItem from '@/components/Notifications/AppNotificationItem.vue';
+import AppNotificationItem from '@/components/Notifications/AppNotificationItem.vue'
 
 // VUEX
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 export default {
-    components: {
-        AppNotificationItem
-    },
-    data: () => ({
-        item: 1,
-        items: [
-            { text: 'Real-Time', icon: 'mdi-clock' },
-            { text: 'Audience', icon: 'mdi-account' },
-            { text: 'Conversions', icon: 'mdi-flag' },
-        ],
-    }),
-    computed: {
-        ...mapGetters(['userNotifications'])
-        }
-    }
+  components: {
+    AppNotificationItem
+  },
+  data: () => ({
+    item: 1,
+    items: [
+      { text: 'Real-Time', icon: 'mdi-clock' },
+      { text: 'Audience', icon: 'mdi-account' },
+      { text: 'Conversions', icon: 'mdi-flag' }
+    ]
+  }),
+  computed: {
+    ...mapGetters(['userNotifications'])
+  }
+}
 </script>

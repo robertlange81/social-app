@@ -9,7 +9,7 @@
         </template>
       <span>Delete scream</span>
     </v-tooltip>
-    
+
     <v-dialog v-model="dialog" max-width="290" >
       <v-card>
         <v-card-title class="headline"></v-card-title>
@@ -22,7 +22,7 @@
         <v-card-actions>
           <div class="flex-grow-1"></div>
 
-          <v-btn color="cyan darken-1" text @click="dialog = false" 
+          <v-btn color="cyan darken-1" text @click="dialog = false"
           :disabled="loadingUser" >
             No
           </v-btn>
@@ -38,9 +38,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
-import { mdiDeleteOutline, mdiDelete } from '@mdi/js';
+// eslint-disable-next-line no-unused-vars
+import { mdiDeleteOutline, mdiDelete } from '@mdi/js'
 
 export default {
   props: {
@@ -57,12 +58,12 @@ export default {
     }
   },
   methods: {
-      handleDeleteScream() {
-          this.$store.dispatch('DELETE_SCREAM', this.scream.screamId)
-          .then(() => {
-            this.dialog = false
-          })
-      }
+    handleDeleteScream () {
+      this.$store.dispatch('DELETE_SCREAM', this.scream.screamId)
+        .then(() => {
+          this.dialog = false
+        })
+    }
   },
   computed: {
     ...mapGetters(['loadingUser'])

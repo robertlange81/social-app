@@ -4,7 +4,7 @@
             Profile not found
         </div>
         <div class="subtitle-1 text-center mb-5">
-            <div class="grey--text text--darken-1">Don't have an account?</div> 
+            <div class="grey--text text--darken-1">Don't have an account?</div>
             <router-link to="/signup" class="title">
                 <v-btn color="#32BCC3" elevation="0" class="mt-3" dark>
                     Sign Up
@@ -23,12 +23,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
-    computed: {
-        ...mapGetters(["isAuthenticated"])
-    }
+  computed: {
+    ...mapGetters(['isAuthenticated'])
+  }
 }
 </script>
-

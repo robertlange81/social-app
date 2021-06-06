@@ -64,46 +64,48 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
+
 // COMPONENTS
-import AppEditProfile from '@/components/Profile/AppEditProfile.vue';
+import AppEditProfile from '@/components/Profile/AppEditProfile.vue'
 
 // SVG ICONS
-import { mdiMapMarker, mdiWeb, mdiCalendar, mdiPencil, mdiPencilOutline, mdiCameraRetakeOutline } from '@mdi/js';
+import { mdiMapMarker, mdiWeb, mdiCalendar, mdiPencil, mdiPencilOutline, mdiCameraRetakeOutline } from '@mdi/js'
 
 // VUEX
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 export default {
-    components: {
-        AppEditProfile,
-    },
-    props: {
-        data: {
-            type: Object,
-        }
-    },
-    data: () => ({
-        svg: {
-            location: mdiMapMarker,
-            web: mdiWeb,
-            calendar: mdiCalendar,
-            pencil: mdiPencil,
-            camera: mdiCameraRetakeOutline
-        }
-    }),
-    methods: {
-        handleImageChange(event) {
-            const image = event.target.files[0];
-            const formData = new FormData();
-            formData.append('image', image, image.name);
-            this.$store.dispatch('UPLOAD_IMAGE', formData);
-        },
-        editImage() {
-            const imageInput = document.getElementById('imageInput');
-            imageInput.click();
-        }
-    },
-    computed: {
-        ...mapGetters(['isAuthenticated', 'userCredentials'])
+  components: {
+    AppEditProfile
+  },
+  props: {
+    data: {
+      type: Object
     }
+  },
+  data: () => ({
+    svg: {
+      location: mdiMapMarker,
+      web: mdiWeb,
+      calendar: mdiCalendar,
+      pencil: mdiPencil,
+      camera: mdiCameraRetakeOutline
+    }
+  }),
+  methods: {
+    handleImageChange (event) {
+      const image = event.target.files[0]
+      const formData = new FormData()
+      formData.append('image', image, image.name)
+      this.$store.dispatch('UPLOAD_IMAGE', formData)
+    },
+    editImage () {
+      const imageInput = document.getElementById('imageInput')
+      imageInput.click()
+    }
+  },
+  computed: {
+    ...mapGetters(['isAuthenticated', 'userCredentials'])
+  }
 }
 </script>

@@ -12,13 +12,13 @@
 
 <script>
 // COMPONENTS
-import AppPanel from '@/components/AppPanel';
-import AppSignUpForm from '@/components/Form/AppSignUpForm';
+import AppPanel from '@/components/AppPanel'
+import AppSignUpForm from '@/components/Form/AppSignUpForm'
 
 export default {
-    components: {
-        AppPanel,
-        AppSignUpForm
-    },
+  components: {
+    AppPanel,
+    AppSignUpForm
+  }
 }
 </script>

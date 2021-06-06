@@ -16,7 +16,7 @@
                     <form @submit.prevent="handleCommentSubmit" ref="form">
                             <v-row>
                                 <v-col cols="12">
-                                    <v-textarea label="Write a comment" type="text" required v-model="body" counter :loading="loadingForm" no-resize 
+                                    <v-textarea label="Write a comment" type="text" required v-model="body" counter :loading="loadingForm" no-resize
                                     color="#32BCC3" rows="3">
                                     </v-textarea>
                                 </v-col>
@@ -34,26 +34,27 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
-    props: ['screamId'],
-    data: () => ({
-        body: ''
-    }),
-    methods: {
-        handleCommentSubmit() {
-            this.$store.dispatch('SUBMIT_COMMENT', {screamId: this.screamId, comment: {
-                body: this.body
-            }})
-            .then(() => {
-                this.body = ''
-            })
-            .catch((error) => error)
-        },
-    },
-    computed: {
-        ...mapGetters(['loadingForm', 'userCredentials'])
-    },
+  props: ['screamId'],
+  data: () => ({
+    body: ''
+  }),
+  methods: {
+    handleCommentSubmit () {
+      this.$store.dispatch('SUBMIT_COMMENT', { screamId: this.screamId,
+        comment: {
+          body: this.body
+        } })
+        .then(() => {
+          this.body = ''
+        })
+        .catch((error) => error)
+    }
+  },
+  computed: {
+    ...mapGetters(['loadingForm', 'userCredentials'])
+  }
 }
 </script>

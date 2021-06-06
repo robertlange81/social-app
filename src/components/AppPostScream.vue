@@ -14,7 +14,6 @@
     </template>
     <!------------------------ END POST BUTTON ----------------------->
 
-
     <!------------------------ POST FORM ----------------------->
     <v-card>
       <v-card-title class="primario white--text">
@@ -32,21 +31,22 @@
 
 <script>
 // COMPONENTS
-import AppPostForm from '@/components/AppPostForm.vue';
+import AppPostForm from '@/components/AppPostForm.vue'
 
 // SVG ICONS
-import { mdiPencil, mdiPencilOutline, mdiPencilRemoveOutline } from '@mdi/js';
+// eslint-disable-next-line no-unused-vars
+import { mdiPencil, mdiPencilOutline, mdiPencilRemoveOutline } from '@mdi/js'
 
 export default {
   components: {
     AppPostForm
   },
   data: () => ({
-      dialog: false,
-      loadingImport: false,
-      svg: {
-          pencil: mdiPencilRemoveOutline
-      }
+    dialog: false,
+    loadingImport: false,
+    svg: {
+      pencil: mdiPencilRemoveOutline
+    }
   })
 }
 </script>

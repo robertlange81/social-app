@@ -21,7 +21,7 @@
                         </div>
                     </v-col>
                     <v-col cols="12" md="8">
-                    
+
                     </v-col>
                     <v-col cols="12" md="4" class="center">
 
@@ -33,28 +33,26 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 
 export default {
-    props: {
-        data: {
-            type: Object,
-            required: true
-        }
-    },
-    methods: {
-        getUser() {
-            this.$router.push(`/users/${this.data.userHandle}`)
-            this.$store.dispatch('GET_USER', this.data.userHandle)
-            this.$emit('click')
-        }
-    },
-    filters: {
-        exactDay(date) {
-
-            return dayjs(date).format('h:mm a, MMMM DD YYYY');
-
-        }
+  props: {
+    data: {
+      type: Object,
+      required: true
     }
+  },
+  methods: {
+    getUser () {
+      this.$router.push(`/users/${this.data.userHandle}`)
+      this.$store.dispatch('GET_USER', this.data.userHandle)
+      this.$emit('click')
+    }
+  },
+  filters: {
+    exactDay (date) {
+      return dayjs(date).format('h:mm a, MMMM DD YYYY')
+    }
+  }
 }
 </script>
