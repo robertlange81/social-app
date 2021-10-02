@@ -24,12 +24,14 @@ export default {
     Vue.set(state.authUser.likes, index, likedScream)
   },
   SET_UNLIKE: (state, data) => {
+    debugger
     const index = state.authUser.likes.findIndex(scream => scream.screamId === data.screamId)
     Vue.delete(state.authUser.likes, index)
   },
 
   // SCREAMS/POST
   SET_SCREAMS: (state, data) => {
+    debugger
     state.screams = data
   },
   SET_SCREAM: (state, data) => {

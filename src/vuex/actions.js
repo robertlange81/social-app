@@ -6,7 +6,9 @@ export default {
 
   // GET SCREAMS IN STATE
   GET_SCREAMS: async ({ commit, dispatch }) => {
-    const response = await Api().get('screams')
+    const response = await Api().get('posts.json')
+    debugger
+    console.log(response.data)
     const data = response.data
     commit('SET_SCREAMS', data)
   },
@@ -93,14 +95,14 @@ export default {
 
   // USER INTERACTIONS
   LIKE_SCREAM: ({ commit }, screamId) => {
-    Api().get(`scream/${screamId}/like`)
+    Api().get(`posts/${screamId}/like`)
       .then((res) => {
         commit('SET_SCREAM', res.data)
         commit('SET_LIKE', res.data)
       })
   },
   UNLIKE_SCREAM: ({ commit }, screamId) => {
-    Api().get(`scream/${screamId}/unlike`)
+    Api().get(`posts/${screamId}/unlike`)
       .then((res) => {
         commit('SET_SCREAM', res.data)
         commit('SET_UNLIKE', res.data)
@@ -120,7 +122,7 @@ export default {
   }),
   DELETE_SCREAM: ({ commit }, screamId) => new Promise((response) => {
     commit('SET_LOADING', { name: 'user', value: true })
-    Api().delete(`scream/${screamId}/`)
+    Api().delete(`posts/${screamId}/`)
       .then((res) => {
         commit('SET_DELETE_SCREAM', screamId)
         commit('SET_LOADING', { name: 'user', value: false })
@@ -134,8 +136,9 @@ export default {
   // SELECT A SCREAM
   GET_SCREAM: ({ commit }, screamId) => new Promise((response, reject) => {
     commit('SET_LOADING', { name: 'user', value: true })
-    Api().get(`scream/${screamId}/`)
+    Api().get(`posts/${screamId}/`)
       .then((res) => {
+        debugger
         commit('SET_SELECTED_SCREAM', res.data)
         commit('SET_LOADING', { name: 'user', value: false })
       })
@@ -177,10 +180,12 @@ export default {
     commit('SET_LOADING', { name: 'ui', value: true })
     Api().get(`user/${handle}`)
       .then((res) => {
+        debugger
         commit('SET_DATA_USER_PROFILE', res.data)
         commit('SET_LOADING', { name: 'ui', value: false })
       })
       .catch((error) => {
+        debugger
         commit('SET_LOADING', { name: 'ui', value: false })
       })
   },

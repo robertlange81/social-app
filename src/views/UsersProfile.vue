@@ -61,8 +61,9 @@ export default {
   computed: {
     ...mapGetters(['loadingUI', 'userSelected']),
     userScreams () {
-      return this.$store.state.screams.filter(scream => scream.userHandle === this.$route.params.handle
-      )
+      debugger
+      let x = this.$store.state.screams
+      return this.$store.state.screams.filter(scream => scream.userHandle === this.$route.params.handle)
     }
   }
 }
