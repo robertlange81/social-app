@@ -25,7 +25,7 @@
 
           <!--------------------- AUTH COMMENT FORM -------------------->
           <div class="mt-5 mb-5 center">
-            <AppNewCommentForm v-if="isAuthenticated" :screamId="data.screamId"></AppNewCommentForm>
+            <AppNewCommentForm v-if="isAuthenticated" :id="data.id"></AppNewCommentForm>
             <router-link v-else to="/login">
               <v-btn elevation="0" color="#32BCC3" dark>Comment</v-btn>
             </router-link>
@@ -115,7 +115,7 @@ export default {
     getScream () {
       this.dialog = true
       setTimeout(() => {
-        this.$store.dispatch('GET_SCREAM', this.data.screamId)
+        this.$store.dispatch('GET_SCREAM', this.data.id)
       }, 300)
     },
     closeModal () {
@@ -129,7 +129,7 @@ export default {
     ...mapGetters(['isAuthenticated', 'userLikes', 'userCredentials', 'loadingUser', 'selectedScream']),
     isLiked () {
       if (this.isAuthenticated && this.userLikes) {
-        let findScreamLiked = this.userLikes.findIndex(scream => scream.screamId === this.data.screamId)
+        let findScreamLiked = this.userLikes.findIndex(scream => scream.id === this.data.id)
         return findScreamLiked >= 0
       }
       return false
@@ -137,7 +137,7 @@ export default {
   },
   mounted () {
     // OPEN DIALOG WHEN NOTIFICATION IS ACTIVE
-    if (this.data.screamId === this.$route.params.screamId) {
+    if (this.data.id === this.$route.params.id) {
       this.getScream()
     }
   }

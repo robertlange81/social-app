@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     handleDeleteScream () {
-      this.$store.dispatch('DELETE_SCREAM', this.scream.screamId)
+      this.$store.dispatch('DELETE_SCREAM', this.scream.id)
         .then(() => {
           this.dialog = false
         })

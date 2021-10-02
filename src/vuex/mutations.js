@@ -18,14 +18,14 @@ export default {
   SET_LIKE: (state, data) => {
     const index = state.authUser.likes.length
     const likedScream = {
-      screamId: data.screamId,
+      id: data.id,
       userHandle: state.authUser.credentials.handle
     }
     Vue.set(state.authUser.likes, index, likedScream)
   },
   SET_UNLIKE: (state, data) => {
     debugger
-    const index = state.authUser.likes.findIndex(scream => scream.screamId === data.screamId)
+    const index = state.authUser.likes.findIndex(scream => scream.id === data.id)
     Vue.delete(state.authUser.likes, index)
   },
 
@@ -35,15 +35,15 @@ export default {
     state.screams = data
   },
   SET_SCREAM: (state, data) => {
-    const index = state.screams.findIndex(scream => scream.screamId === data.screamId)
+    const index = state.screams.findIndex(scream => scream.id === data.id)
     Vue.set(state.screams, index, data)
   },
   SET_NEW_SCREAM: (state, newScream) => {
     state.screams.unshift(newScream)
     state.loading.user = false
   },
-  SET_DELETE_SCREAM: (state, screamId) => {
-    const index = state.screams.findIndex(scream => scream.screamId === screamId)
+  SET_DELETE_SCREAM: (state, id) => {
+    const index = state.screams.findIndex(scream => scream.id === id)
     Vue.delete(state.screams, index)
   },
   SET_CLEAN_SCREAM: (state) => state.selectedScream = {},
@@ -51,7 +51,7 @@ export default {
 
   // NEW COMMENT IN A SCREAM
   SET_IN_SELECTED_SCREAM_COMMENTS: (state, commentData) => {
-    const index = state.screams.findIndex(scream => scream.screamId === commentData.screamId)
+    const index = state.screams.findIndex(scream => scream.id === commentData.id)
     state.screams[index].commentCount += 1
     state.selectedScream.comments.unshift(commentData)
   },

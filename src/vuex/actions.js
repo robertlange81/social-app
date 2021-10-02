@@ -94,15 +94,15 @@ export default {
   }),
 
   // USER INTERACTIONS
-  LIKE_SCREAM: ({ commit }, screamId) => {
-    Api().get(`posts/${screamId}/like`)
+  LIKE_SCREAM: ({ commit }, id) => {
+    Api().get(`posts/${id}/like`)
       .then((res) => {
         commit('SET_SCREAM', res.data)
         commit('SET_LIKE', res.data)
       })
   },
-  UNLIKE_SCREAM: ({ commit }, screamId) => {
-    Api().get(`posts/${screamId}/unlike`)
+  UNLIKE_SCREAM: ({ commit }, id) => {
+    Api().get(`posts/${id}/unlike`)
       .then((res) => {
         commit('SET_SCREAM', res.data)
         commit('SET_UNLIKE', res.data)
@@ -120,11 +120,11 @@ export default {
         commit('SET_LOADING', { name: 'user', value: false })
       })
   }),
-  DELETE_SCREAM: ({ commit }, screamId) => new Promise((response) => {
+  DELETE_SCREAM: ({ commit }, id) => new Promise((response) => {
     commit('SET_LOADING', { name: 'user', value: true })
-    Api().delete(`posts/${screamId}/`)
+    Api().delete(`posts/${id}/`)
       .then((res) => {
-        commit('SET_DELETE_SCREAM', screamId)
+        commit('SET_DELETE_SCREAM', id)
         commit('SET_LOADING', { name: 'user', value: false })
         response()
       })
@@ -134,9 +134,9 @@ export default {
   }),
 
   // SELECT A SCREAM
-  GET_SCREAM: ({ commit }, screamId) => new Promise((response, reject) => {
+  GET_SCREAM: ({ commit }, id) => new Promise((response, reject) => {
     commit('SET_LOADING', { name: 'user', value: true })
-    Api().get(`posts/${screamId}/`)
+    Api().get(`posts/${id}/`)
       .then((res) => {
         debugger
         commit('SET_SELECTED_SCREAM', res.data)
@@ -150,7 +150,7 @@ export default {
   // COMMENT IN SCREAM
   SUBMIT_COMMENT: ({ commit }, commentData) => new Promise((response, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
-    Api().post(`scream/${commentData.screamId}/comment`, commentData.comment)
+    Api().post(`scream/${commentData.id}/comment`, commentData.comment)
       .then((res) => {
         commit('SET_IN_SELECTED_SCREAM_COMMENTS', res.data)
         commit('SET_LOADING', { name: 'form', value: false })

@@ -20,9 +20,9 @@ export const likeMethod = {
     likeScream (isAuthenticated, scream) {
       if (isAuthenticated && scream) {
         if (!this.isLiked) {
-          this.$store.dispatch('LIKE_SCREAM', scream.screamId)
+          this.$store.dispatch('LIKE_SCREAM', scream.id)
         } else {
-          this.$store.dispatch('UNLIKE_SCREAM', scream.screamId)
+          this.$store.dispatch('UNLIKE_SCREAM', scream.id)
         }
       } else {
         this.$router.push({ name: 'login' })

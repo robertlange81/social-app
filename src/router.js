@@ -41,7 +41,7 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/UsersProfile.vue')
     },
     {
-      path: '/users/:handle/scream/:screamId',
+      path: '/users/:handle/scream/:id',
       name: 'notification',
       component: () => import(/* webpackChunkName: "about" */ './views/UsersProfile.vue')
     },

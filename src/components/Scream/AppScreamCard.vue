@@ -98,7 +98,7 @@ export default {
     ...mapGetters(['isAuthenticated', 'userLikes', 'userCredentials']),
     isLiked () {
       if (this.isAuthenticated && this.userLikes) {
-        let findIfScreamIsLiked = this.userLikes.findIndex(scream => scream.screamId === this.scream.screamId)
+        let findIfScreamIsLiked = this.userLikes.findIndex(scream => scream.id === this.scream.id)
         return findIfScreamIsLiked >= 0
       }
       return false

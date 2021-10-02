@@ -37,13 +37,13 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  props: ['screamId'],
+  props: ['id'],
   data: () => ({
     body: ''
   }),
   methods: {
     handleCommentSubmit () {
-      this.$store.dispatch('SUBMIT_COMMENT', { screamId: this.screamId,
+      this.$store.dispatch('SUBMIT_COMMENT', { id: this.id,
         comment: {
           body: this.body
         } })
