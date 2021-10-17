@@ -35,6 +35,7 @@ export default {
     state.screams = data
   },
   SET_SCREAM: (state, data) => {
+    debugger
     const index = state.screams.findIndex(scream => scream.id === data.id)
     Vue.set(state.screams, index, data)
   },

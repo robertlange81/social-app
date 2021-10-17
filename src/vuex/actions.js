@@ -9,7 +9,7 @@ export default {
     const response = await Api().get('posts.json')
     debugger
     console.log(response.data)
-    const data = response.data
+    const data = Array.isArray(response.data) ? response.data : [response.data]
     commit('SET_SCREAMS', data)
   },
 
@@ -136,7 +136,7 @@ export default {
   // SELECT A SCREAM
   GET_SCREAM: ({ commit }, id) => new Promise((response, reject) => {
     commit('SET_LOADING', { name: 'user', value: true })
-    Api().get(`posts/${id}/`)
+    Api().get(`posts/${id}.json`)
       .then((res) => {
         debugger
         commit('SET_SELECTED_SCREAM', res.data)

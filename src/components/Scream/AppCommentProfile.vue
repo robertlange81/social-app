@@ -17,7 +17,7 @@
                     </v-col>
                     <v-col class="text-left" cols="12">
                         <div class="font-weight-regular">
-                            {{data.body}}
+                            {{data.message}}
                         </div>
                     </v-col>
                     <v-col cols="12" md="8">
