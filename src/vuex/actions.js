@@ -1,195 +1,249 @@
-/* eslint-disable promise/param-names,handle-callback-err */
 import axios from 'axios'
 import Api from '../service/Api'
 
+function extractError (error) {
+  if (error.response && error.response.data && error.response.data.error) {
+    return error.response.data.error
+  }
+  return 'Es ist ein Netzwerkfehler aufgetreten. Läuft der Server?'
+}
+
 export default {
 
-  // GET SCREAMS IN STATE
-  GET_SCREAMS: async ({ commit, dispatch }) => {
-    const response = await Api().get('posts.json')
-    debugger
-    console.log(response.data)
-    const data = Array.isArray(response.data) ? response.data : [response.data]
-    commit('SET_SCREAMS', data)
-  },
-
-  // LOGIN / REGISTRATION / LOGOUT / CLEAR ERRORS
+  // AUTH
   SIGN_IN: ({ dispatch, commit }, { email, password }) => new Promise((resolve, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
-    Api().post('login', { email, password })
+    Api().post('auth/login', { email, password })
       .then((res) => {
-        const FBidToken = `Bearer ${res.data.token}`
-        dispatch('AUTH_SUCCESS', FBidToken)
-        dispatch('FETCH_AUTH_USER')
+        dispatch('AUTH_SUCCESS', res.data.token)
+        commit('SET_AUTH_USER', res.data.user)
         commit('SET_LOADING', { name: 'form', value: false })
         resolve()
       })
       .catch((error) => {
-        commit('SET_ERROR', error.response.data)
+        commit('SET_ERROR', extractError(error))
         commit('SET_LOADING', { name: 'form', value: false })
+        reject(error)
       })
   }),
   SIGN_UP: ({ dispatch, commit }, formNewUser) => new Promise((resolve, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
-    Api().post('signup', formNewUser)
+    Api().post('auth/signup', formNewUser)
       .then((res) => {
-        const FBidToken = `Bearer ${res.data.token}`
-        dispatch('AUTH_SUCCESS', FBidToken)
-        dispatch('FETCH_AUTH_USER')
+        dispatch('AUTH_SUCCESS', res.data.token)
+        commit('SET_AUTH_USER', res.data.user)
         commit('SET_LOADING', { name: 'form', value: false })
         resolve(res)
       })
       .catch((error) => {
-        commit('SET_ERROR', error.response.data)
+        commit('SET_ERROR', extractError(error))
         commit('SET_LOADING', { name: 'form', value: false })
+        reject(error)
       })
   }),
-  // eslint-disable-next-line promise/param-names
-  LOGOUT_USER: ({ commit }) => new Promise((response) => {
-    localStorage.removeItem('FBidToken')
+  LOGOUT_USER: ({ commit }) => new Promise((resolve) => {
+    localStorage.removeItem('authToken')
     delete axios.defaults.headers.common['Authorization']
-    commit('SET_USER_UNAUTHENTICATED', {})
-    response()
+    commit('SET_USER_UNAUTHENTICATED')
+    resolve()
   }),
-  AUTH_SUCCESS: ({ commit }, FBidToken) => {
-    localStorage.setItem('FBidToken', FBidToken)
-    axios.defaults.headers.common['Authorization'] = FBidToken
-    commit('SET_AUTHORIZATION', FBidToken)
+  AUTH_SUCCESS: ({ commit }, token) => {
+    localStorage.setItem('authToken', token)
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    commit('SET_AUTHORIZATION', token)
   },
-  AUTH_USER: ({ commit }, token) => { commit('SET_AUTHORIZATION', token) },
+  AUTH_USER: ({ commit, dispatch }, token) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    commit('SET_AUTHORIZATION', token)
+    dispatch('FETCH_AUTH_USER')
+  },
   CLEAR_ERROR: ({ commit }) => commit('SET_CLEAR_ERROR'),
 
-  // FETCH/GET USER AUTHTENTICATED
-  FETCH_AUTH_USER: ({ commit }) => {
-    // commit('SET_LOADING', { name: 'user', value: true});
-    Api().get('user')
-      .then((res) => {
-        commit('SET_AUTH_USER', res.data)
-      })
-      // eslint-disable-next-line handle-callback-err
-      .catch((error) => {
-      })
+  FETCH_AUTH_USER: ({ commit, dispatch }) => {
+    Api().get('me')
+      .then((res) => commit('SET_AUTH_USER', res.data.user))
+      .catch(() => dispatch('LOGOUT_USER'))
   },
 
   // EDIT AUTH USER PROFILE
-  UPLOAD_IMAGE: ({ commit, dispatch }, formData) => {
-    Api().post('user/image', formData)
+  UPLOAD_IMAGE: ({ commit }, formData) => {
+    commit('SET_LOADING', { name: 'user', value: true })
+    return Api().post('me/photo', formData)
       .then((res) => {
-        dispatch('FETCH_AUTH_USER')
+        commit('SET_AUTH_USER', res.data.user)
+        commit('SET_LOADING', { name: 'user', value: false })
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'user', value: false })
+        throw error
+      })
   },
-  // eslint-disable-next-line promise/param-names
-  EDIT_USER_DETAILS: ({ dispatch, commit }, userDetails) => new Promise((resolve, err) => {
+  EDIT_USER_DETAILS: ({ commit }, userDetails) => new Promise((resolve, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
-    Api().post('user', userDetails)
+    Api().put('me', userDetails)
       .then((res) => {
-        dispatch('FETCH_AUTH_USER')
+        commit('SET_AUTH_USER', res.data.user)
         commit('SET_LOADING', { name: 'form', value: false })
         resolve(res)
       })
       .catch((error) => {
+        commit('SET_ERROR', extractError(error))
         commit('SET_LOADING', { name: 'form', value: false })
-      })
-  }),
-
-  // USER INTERACTIONS
-  LIKE_SCREAM: ({ commit }, id) => {
-    Api().get(`posts/${id}/like`)
-      .then((res) => {
-        commit('SET_SCREAM', res.data)
-        commit('SET_LIKE', res.data)
-      })
-  },
-  UNLIKE_SCREAM: ({ commit }, id) => {
-    Api().get(`posts/${id}/unlike`)
-      .then((res) => {
-        commit('SET_SCREAM', res.data)
-        commit('SET_UNLIKE', res.data)
-      })
-  },
-  POST_NEW_SCREAM: ({ commit }, newScream) => new Promise((response, reject) => {
-    commit('SET_LOADING', { name: 'user', value: true })
-    Api().post('scream', newScream)
-      .then((res) => {
-        commit('SET_NEW_SCREAM', res.data)
-        commit('SET_LOADING', { name: 'user', value: false })
-        response()
-      })
-      .catch((error) => {
-        commit('SET_LOADING', { name: 'user', value: false })
-      })
-  }),
-  DELETE_SCREAM: ({ commit }, id) => new Promise((response) => {
-    commit('SET_LOADING', { name: 'user', value: true })
-    Api().delete(`posts/${id}/`)
-      .then((res) => {
-        commit('SET_DELETE_SCREAM', id)
-        commit('SET_LOADING', { name: 'user', value: false })
-        response()
-      })
-      .catch((error) => {
-        commit('SET_LOADING', { name: 'user', value: false })
-      })
-  }),
-
-  // SELECT A SCREAM
-  GET_SCREAM: ({ commit }, id) => new Promise((response, reject) => {
-    commit('SET_LOADING', { name: 'user', value: true })
-    Api().get(`posts/${id}.json`)
-      .then((res) => {
-        debugger
-        commit('SET_SELECTED_SCREAM', res.data)
-        commit('SET_LOADING', { name: 'user', value: false })
-      })
-      .catch((error) => {
-        commit('SET_LOADING', { name: 'user', value: false })
-      })
-  }),
-
-  // COMMENT IN SCREAM
-  SUBMIT_COMMENT: ({ commit }, commentData) => new Promise((response, reject) => {
-    commit('SET_LOADING', { name: 'form', value: true })
-    Api().post(`scream/${commentData.id}/comment`, commentData.comment)
-      .then((res) => {
-        commit('SET_IN_SELECTED_SCREAM_COMMENTS', res.data)
-        commit('SET_LOADING', { name: 'form', value: false })
-        response()
-      })
-      .catch((error) => {
-        reject(error)
-        commit('SET_LOADING', { name: 'form', value: false })
-      })
-  }),
-  CLEAN_SELECTED_SCREAM: ({ commit }) => commit('SET_CLEAN_SCREAM'),
-
-  // NOTIFICATIONS
-  MARK_NOTIFICATIONS: ({ commit }, notificationId) => {
-    Api().post('notifications', notificationId)
-      .then(() => {
-        commit('SET_NOTIFICATIONS', notificationId)
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-undef
         reject(error)
       })
-  },
+  }),
 
-  // SELECT A USER NAME AND GET THE DATA TO SEE IN PROFILE USERS PAGE
-  GET_USER: ({ commit }, handle) => {
+  // DISCOVER / SWIPE
+  FETCH_DISCOVER: ({ commit }, filters) => {
     commit('SET_LOADING', { name: 'ui', value: true })
-    Api().get(`user/${handle}`)
+    return Api().get('discover', { params: filters })
       .then((res) => {
-        debugger
-        commit('SET_DATA_USER_PROFILE', res.data)
+        commit('SET_DISCOVER_PROFILES', res.data.profiles)
         commit('SET_LOADING', { name: 'ui', value: false })
       })
       .catch((error) => {
-        debugger
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+  FETCH_NEWEST: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('discover', { params: { sort: 'newest', limit: 15 } })
+      .then((res) => {
+        commit('SET_NEWEST_PROFILES', res.data.profiles)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+  SWIPE: ({ commit }, { toUserId, direction }) => {
+    commit('REMOVE_DISCOVER_PROFILE', toUserId)
+    return Api().post('swipes', { toUserId, direction })
+      .then((res) => {
+        commit('SET_LAST_MATCH_RESULT', res.data.matched ? res.data : null)
+        return res.data
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+      })
+  },
+  CLEAR_MATCH_RESULT: ({ commit }) => commit('SET_LAST_MATCH_RESULT', null),
+
+  // SEARCH
+  SEARCH_PROFILES: ({ commit }, filters) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('search', { params: filters })
+      .then((res) => {
+        commit('SET_SEARCH_RESULTS', { profiles: res.data.profiles, total: res.data.total })
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
         commit('SET_LOADING', { name: 'ui', value: false })
       })
   },
 
-  // SET A PATH TO AUTHENTICATED/UNAUTHENTICATED USER BEFORE CREATE (LOGIN OR SIGNUP)
-  TO_LAND: ({ commit }, pathName) => { commit('SET_LAND', pathName) }
+  // BOOKMARKS ("MERKEN")
+  FETCH_BOOKMARKS: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('bookmarks')
+      .then((res) => {
+        commit('SET_BOOKMARKS', res.data.bookmarks)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+  TOGGLE_BOOKMARK: ({ commit }, { userId, bookmarked }) => {
+    const request = bookmarked
+      ? Api().delete(`bookmarks/${userId}`)
+      : Api().post('bookmarks', { toUserId: userId })
+    return request
+      .then(() => commit('SET_PROFILE_BOOKMARKED', { userId, value: !bookmarked }))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+
+  // PROFILBESUCHER
+  FETCH_VISITORS: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('me/visitors')
+      .then((res) => {
+        commit('SET_VISITORS', res.data.visitors)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+
+  // LIKES (GESENDET / ERHALTEN)
+  FETCH_LIKES: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Promise.all([Api().get('likes/sent'), Api().get('likes/received')])
+      .then(([sentRes, receivedRes]) => {
+        commit('SET_LIKES_SENT', sentRes.data.likes)
+        commit('SET_LIKES_RECEIVED', receivedRes.data.likes)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+
+  // UNMATCH
+  UNMATCH: ({ commit }, matchId) => {
+    return Api().delete(`matches/${matchId}`)
+      .then(() => commit('REMOVE_MATCH', matchId))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+
+  // MATCHES / CHAT
+  FETCH_MATCHES: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('matches')
+      .then((res) => {
+        commit('SET_MATCHES', res.data.matches)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+  FETCH_MATCH_MESSAGES: ({ commit }, matchId) => {
+    return Api().get(`matches/${matchId}/messages`)
+      .then((res) => commit('SET_MATCH_MESSAGES', res.data.messages))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+  SEND_MATCH_MESSAGE: ({ commit }, { matchId, body }) => {
+    return Api().post(`matches/${matchId}/messages`, { body })
+      .then((res) => {
+        commit('ADD_MATCH_MESSAGE', res.data.message)
+        return res.data.message
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+      })
+  },
+
+  // VIEW OTHER PROFILE
+  FETCH_USER_PROFILE: ({ commit }, handle) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get(`users/${handle}`)
+      .then((res) => {
+        commit('SET_VIEWED_PROFILE', res.data.user)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  }
 }

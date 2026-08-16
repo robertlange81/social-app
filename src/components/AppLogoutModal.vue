@@ -37,11 +37,6 @@ import { mapGetters } from 'vuex'
 import { mdiExitToApp } from '@mdi/js'
 
 export default {
-  props: {
-    scream: {
-      type: Object
-    }
-  },
   data () {
     return {
       dialog: false,

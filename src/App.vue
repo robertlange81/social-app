@@ -15,9 +15,6 @@ export default {
   name: 'App',
   components: {
     Navbar
-  },
-  mounted () {
-    this.$store.dispatch('GET_SCREAMS')
   }
 }
 </script>
@@ -25,6 +22,6 @@ export default {
 <style lang="scss">
 @import './src/assets/main.scss';
 #app {
-  background: #d6dfe2;
+  background: transparent !important;
 }
 </style>

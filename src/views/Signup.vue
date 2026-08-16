@@ -2,7 +2,7 @@
     <v-container class="gray" style="min-height: 100vh;">
         <v-row justify="center">
             <v-col cols="11" sm="6" md="4">
-                <AppPanel name="Create an account">
+                <AppPanel name="Konto erstellen">
                     <AppSignUpForm></AppSignUpForm>
                 </AppPanel>
             </v-col>

@@ -3,7 +3,7 @@
         <v-text-field
             v-model="loginUser.email"
             :rules="emailRules"
-            label="E-mail"
+            label="E-Mail"
             required
             :loading="loadingForm"
             color="#32BCC3"
@@ -12,39 +12,30 @@
             v-model="loginUser.password"
             :append-icon="showPassword ? svg.visibility : svg.visibilityOff"
             :type="showPassword ? 'text' : 'password'"
-            name="input-10-1"
-            label="Password"
-            hint="At least 6 char acters"
-            counter
+            label="Passwort"
             :loading="loadingForm"
             @click:append="showPassword = !showPassword"
             color="#32BCC3"
         ></v-text-field>
 
         <!-------------------------  FORM ERRORS  ------------------->
-        <div v-if="errors" class="subtitle1 text-center text-capitalize red--text">
-            <p v-for="(errorMessage, i) in errors" :key="i">{{errorMessage}}</p>
-            <span>Don't have an account? <router-link class="cyan--text" to="/signup">Sign Up Here</router-link></span>
+        <div v-if="errors" class="subtitle1 text-center red--text">
+            <p>{{errors}}</p>
+        </div>
+        <div class="subtitle1 text-center">
+            <span>Noch kein Konto? <router-link class="cyan--text" to="/signup">Jetzt registrieren</router-link></span>
         </div>
         <!-------------------------  END FORM ERRORS ------------------->
 
         <div class="mt-5">
-            <v-btn type="submit" :loading="loadingForm" class="mr-4" color="#32BCC3" elevation="0" dark>
-                Submit
-            </v-btn>
-            <v-btn @click="reset" :disabled="loadingForm" color="#32BCC3" elevation="0" dark>
-                Clear
+            <v-btn type="submit" :loading="loadingForm" color="#32BCC3" elevation="0" dark>
+                Anmelden
             </v-btn>
         </div>
     </form>
 </template>
 
 <script>
-/* eslint-disable standard/object-curly-even-spacing */
-
-// MIXINS
-import { reset } from '@/mixins/mixins'
-
 // SVG ICONS
 import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 
@@ -52,7 +43,6 @@ import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { mapGetters } from 'vuex'
 
 export default {
-  mixins: [reset],
   data: () => ({
     showPassword: false,
     loginUser: {
@@ -60,8 +50,8 @@ export default {
       password: ''
     },
     emailRules: [
-      v => !!v || 'E-mail is required',
-      v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+      v => !!v || 'E-Mail ist erforderlich',
+      v => /.+@.+\..+/.test(v) || 'E-Mail muss gültig sein'
     ],
     svg: {
       visibility: mdiEyeOutline,
@@ -77,6 +67,7 @@ export default {
         .then(() => {
           this.$router.push({ name: 'home' })
         })
+        .catch(() => {})
     }
   },
   computed: {

@@ -2,6 +2,13 @@
 node_modules
 /dist
 
+# server (backend)
+server/node_modules
+server/data
+server/uploads/*
+!server/uploads/.gitkeep
+server/.env
+
 # local env files
 .env.local
 .env.*.local
@@ -22,5 +29,4 @@ yarn-error.log*
 .firebaserc
 deploy.sh
 firebase.json
-vue.config.js
 .firebase

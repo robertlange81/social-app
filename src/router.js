@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import store from './vuex'
-// import store from './store.js'
 
 Vue.use(Router)
 
@@ -27,31 +26,61 @@ const router = new Router({
       path: '/login',
       name: 'login',
       beforeEnter: ifNotAuthenticated,
-      component: () => import(/* webpackChunkName: "about" */ './views/Login.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/Login.vue')
     },
     {
       path: '/signup',
       name: 'signup',
       beforeEnter: ifNotAuthenticated,
-      component: () => import(/* webpackChunkName: "about" */ './views/Signup.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/Signup.vue')
     },
     {
-      path: '/users/:handle',
-      name: 'user',
-      component: () => import(/* webpackChunkName: "about" */ './views/UsersProfile.vue')
+      path: '/discover',
+      name: 'discover',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Discover.vue')
     },
     {
-      path: '/users/:handle/scream/:id',
-      name: 'notification',
-      component: () => import(/* webpackChunkName: "about" */ './views/UsersProfile.vue')
+      path: '/matches',
+      name: 'matches',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Matches.vue')
     },
     {
-      path: '/notifications',
-      name: 'notifications',
-      meta: {
-        requiresAuth: true
-      },
-      component: () => import(/* webpackChunkName: "about" */ './views/Notifications.vue')
+      path: '/matches/:id',
+      name: 'chat',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Chat.vue')
+    },
+    {
+      path: '/profile/:handle',
+      name: 'profile',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/UsersProfile.vue')
+    },
+    {
+      path: '/search',
+      name: 'search',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Search.vue')
+    },
+    {
+      path: '/bookmarks',
+      name: 'bookmarks',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Bookmarks.vue')
+    },
+    {
+      path: '/visitors',
+      name: 'visitors',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Visitors.vue')
+    },
+    {
+      path: '/likes',
+      name: 'likes',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Likes.vue')
     }
   ]
 })
@@ -62,7 +91,7 @@ router.beforeEach((to, from, next) => {
       next()
       return
     }
-    next({ name: 'home' })
+    next({ name: 'login' })
   } else {
     next()
   }

@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './vuex'
 import vuetify from './plugins/vuetify'
-import axios from 'axios'
 
 import day from './filters/day'
 
@@ -11,18 +10,18 @@ import jwtDecode from 'jwt-decode'
 
 Vue.use(day)
 
-const token = localStorage.FBidToken
+const token = localStorage.getItem('authToken')
 
 if (token) {
-  const decodedToken = jwtDecode(token)
-
-  if (decodedToken.exp * 1000 > Date.now()) {
-    axios.defaults.headers.common['Authorization'] = token
-    store.dispatch('AUTH_USER', token)
-  }
-  if (decodedToken.exp * 1000 < Date.now()) {
+  try {
+    const decodedToken = jwtDecode(token)
+    if (decodedToken.exp * 1000 > Date.now()) {
+      store.dispatch('AUTH_USER', token)
+    } else {
+      store.dispatch('LOGOUT_USER')
+    }
+  } catch (e) {
     store.dispatch('LOGOUT_USER')
-    // store.state.path = '/login';
   }
 }
 
@@ -32,13 +31,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App),
-  beforeCreate () {
-    if (store.state.token) {
-      this.$store.dispatch('FETCH_AUTH_USER')
-    }
-    // else {
-    //   router.push(store.state.path)
-    // }
-  }
+  render: h => h(App)
 }).$mount('#app')

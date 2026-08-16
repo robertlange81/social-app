@@ -1,33 +1,13 @@
 <template>
   <v-container fluid pa-3 style="min-height: 100vh;">
-    <v-row>
-
-      <!------------------------ SCREAM LIST ----------------------->
-      <v-col cols="12" sm="8" v-if="userScreams" order="1" order-sm="1">
-
-          <!------------------------ SCREAM ITEM ----------------------->
-          <v-card class="mb-5" v-for="(scream, i) in userScreams" :key="i" elevation="0">
-            <AppScreamCard :scream="scream" ></AppScreamCard>
-          </v-card>
-          <!------------------------ END SCREAM ITEM ----------------------->
-
-      </v-col>
-      <v-col cols="12" sm="8" v-else order="1">
-          <v-card v-for="n in 5" :key="n" class="mb-5" elevation="0">
-              <AppScreamContentLoader></AppScreamContentLoader>
+    <v-row justify="center">
+      <v-col cols="12" sm="6" md="4">
+          <v-card min-height="300" elevation="0">
+            <AppPerfilContentLoader v-if="loadingUI && !isOwnProfile"></AppPerfilContentLoader>
+            <AppProfile :data="profileData" v-else-if="profileData"></AppProfile>
+            <div v-else class="pa-5 text-center">Profil nicht gefunden.</div>
           </v-card>
       </v-col>
-      <!------------------------ END SCREAM LIST ----------------------->
-
-      <!------------------------ PROFILE ----------------------->
-      <v-col cols="12" sm="4" order="-1" order-sm="2" >
-          <v-card min-height="300" min-width="150" elevation="0" >
-            <AppPerfilContentLoader v-if="loadingUI"></AppPerfilContentLoader>
-            <AppProfile :data="userSelected" v-else></AppProfile>
-          </v-card>
-      </v-col>
-      <!------------------------ END PROFILE ----------------------->
-
     </v-row>
   </v-container>
 </template>
@@ -35,35 +15,32 @@
 <script>
 // COMPONENTS
 import AppPerfilContentLoader from '@/components/Loaders/AppPerfilLoader.vue'
-import AppScreamContentLoader from '@/components/Loaders/AppScreamLoader.vue'
 import AppProfile from '@/components/Profile/AppProfile.vue'
-import AppDisabledProfile from '@/components/Profile/AppDisabledProfile.vue'
-import AppScreamCard from '@/components/Scream/AppScreamCard.vue'
 
 // VUEX
-// eslint-disable-next-line import/no-duplicates
 import { mapGetters } from 'vuex'
-// eslint-disable-next-line no-unused-vars,import/no-duplicates
-import { mapState } from 'vuex'
 
 export default {
   components: {
     AppPerfilContentLoader,
-    AppScreamContentLoader,
-    AppProfile,
-    // eslint-disable-next-line vue/no-unused-components
-    AppDisabledProfile,
-    AppScreamCard
+    AppProfile
   },
   created () {
     window.scrollTo(0, 0)
+    this.$store.dispatch('FETCH_USER_PROFILE', this.$route.params.handle)
+  },
+  watch: {
+    '$route.params.handle' (handle) {
+      this.$store.dispatch('FETCH_USER_PROFILE', handle)
+    }
   },
   computed: {
-    ...mapGetters(['loadingUI', 'userSelected']),
-    userScreams () {
-      debugger
-      let x = this.$store.state.screams.filter(scream => scream.userHandle === this.$route.params.handle)
-      return x
+    ...mapGetters(['loadingUI', 'viewedProfile', 'authUser', 'isAuthenticated']),
+    isOwnProfile () {
+      return this.isAuthenticated && !!this.authUser && this.authUser.handle === this.$route.params.handle
+    },
+    profileData () {
+      return this.isOwnProfile ? this.authUser : this.viewedProfile
     }
   }
 }

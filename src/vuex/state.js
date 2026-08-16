@@ -5,10 +5,18 @@ export default {
     ui: false
   },
   error: null,
-  path: '',
-  token: localStorage.getItem('FBidToken') || '',
-  screams: [],
-  selectedScream: {},
-  authUser: {},
-  dataUserSelected: null
+  token: localStorage.getItem('authToken') || '',
+  authUser: null,
+  discoverProfiles: [],
+  newestProfiles: [],
+  searchResults: [],
+  searchTotal: 0,
+  bookmarks: [],
+  visitors: [],
+  likesSent: [],
+  likesReceived: [],
+  lastMatchResult: null,
+  matches: [],
+  currentMatchMessages: [],
+  viewedProfile: null
 }

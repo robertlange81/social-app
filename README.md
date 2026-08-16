@@ -1,69 +1,56 @@
-# Social-app
+# Herzklang - Partnerbörse
 
+Eine Partnerbörsen-Anwendung (analog zu Parship/ElitePartner) mit Vue 2 / Vuetify im Frontend
+und einem eigenen Node/Express-Backend mit SQLite-Datenbank.
 
+Kernfeature: Bei der Registrierung ist die Angabe der Partei, die man wählt, **Pflicht** und wird
+ganz oben auf dem Profil angezeigt.
 
-## Project setup
-```
+## Setup
+
+### 1. Backend
+
+```bash
+cd server
 npm install
+cp .env.example .env
+npm run seed   # legt 100 Demo-Profile mit generierten Comic-Avataren an (Login: <handle>@example.com / "password123")
+npm run dev    # startet die API auf http://localhost:4000
 ```
 
-### Compiles and hot-reloads for development
+### 2. Frontend
+
+Im Projekt-Root (in einem zweiten Terminal):
+
+```bash
+npm install
+npm run serve  # startet die App auf http://localhost:8080
 ```
-npm run serve
-```
 
-# SOCIAL APPLICATION
+Alternativ startet `npm run dev` im Root Backend und Frontend zusammen (nach `npm run server:install`
+und `npm run server:seed` einmalig).
 
-##### By Malbonm07
+## Funktionen
 
-A full stack, fully-featured social media application using Vue, Firebase, Vuex, Express, and Vuetify.
+- Registrierung mit Pflichtangaben: Name, E-Mail, Passwort, Geburtsdatum (Mindestalter 18),
+  Geschlecht, gesuchtes Geschlecht, Wohnort, **Partei** (Pflicht, alphabetisch sortiertes
+  Dropdown, eigene Einwilligung erforderlich)
+- Profil mit Partei-Banner ganz oben, Profilbild-Upload, Bio, bearbeitbare Angaben
+- Hochgeladene Profilbilder werden automatisch serverseitig in einen Comic-Stil umgewandelt
+  (kräftige Farben, geglättete Flächen, betonte Konturen - `server/lib/cartoonify.js`)
+- 100 generierte Demo-Profile mit prozedural erzeugten Comic-Avataren (`server/lib/avatarGenerator.js`)
+- "Entdecken": Swipe-Deck (Ziehen per Maus/Touch oder Buttons) mit Like/Pass
+- Gegenseitiges Like erzeugt ein Match
+- Match-Liste und Chat pro Match (aktualisiert sich alle 3 Sekunden)
+- Psychedelischer Hintergrund im gesamten UI (`src/assets/psychedelic-bg.svg`)
 
-This project covers things such as integration/interactive with REST API server built with Node.js and Express, user login and authentication, image uploads, notifications, cloud functions, and much more. [Server of repository here](https://github.com/malbonm07/fb-server).
-Inspired by [hidjou](https://github.com/hidjou/classsed-react-firebase-client)
+## Datenschutz-Hinweis
 
+Die Partei-Angabe zählt als besondere Kategorie personenbezogener Daten (Art. 9 DSGVO).
+Registrierung verlangt daher eine separate, klar beschriftete Einwilligung dafür - unabhängig
+von der allgemeinen Zustimmung zu den Nutzungsbedingungen.
 
-![alt text](https://i.imgur.com/beqN3ue.png)
-![alt text](https://i.imgur.com/LlXTjl1.png)
-![alt text](https://i.imgur.com/6Qdj14t.png)
-![alt text](https://i.imgur.com/PBAlv0I.png)
-![alt text](https://i.imgur.com/SPY99RI.png)
-![alt text](https://i.imgur.com/4ROmUzd.png)
+## Stack
 
-### Important things to highlight:
-
-- Sign up and Auth State
-- Vuex Setup
-- Image upload
-- Edit personal profile
-- Add post scream
-- Add a comment
-- Like and Unlike scream
-- Notifications
-- Loading skeletons
-- Creation of custom directives, mixins and custom filter
-- LocalStorage, Authentication, token
-- Single file components
-- Use of vue router params, Navigations guards, meta RequiresAuth
-
-### Stack
-
-* Vue
-* Vuex
-* Vue Router
-* [Vuetify 2.0](https://vuetifyjs.com/en/)
-
-### Programings Languages, Tools and Technologies:
-
-* Html5
-* CSS - Sass
-* Javascript
-* [Axios](https://github.com/axios/axios)
-* [Material Icons](https://materialdesignicons.com/)
-* [Day.js](https://github.com/iamkun/dayjs)
-* [Firebase Cloud](https://firebase.google.com/)
-* [jwt-decode](https://www.npmjs.com/package/jwt-decode)
-* [Skeleton Screens](https://uxdesign.cc/what-you-should-know-about-skeleton-screens-a820c45a571a)
-
----
-made with <3 
-@malbonm07
+* Vue 2, Vuex, Vue Router, Vuetify 2
+* Node.js, Express, better-sqlite3, JWT, bcryptjs, multer

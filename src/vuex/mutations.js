@@ -1,75 +1,82 @@
-/* eslint-disable no-return-assign */
-import Vue from 'vue'
-
 export default {
-  // USER LOGIN/REGISTRATION/AUTH
+  // AUTH
   SET_AUTHORIZATION: (state, token) => {
     state.token = token
   },
-  SET_AUTH_USER: (state, data) => {
-    state.authUser = data
+  SET_AUTH_USER: (state, user) => {
+    state.authUser = user
   },
-  SET_USER_UNAUTHENTICATED: (state, emptyData) => {
-    state.authUser = emptyData
+  SET_USER_UNAUTHENTICATED: (state) => {
+    state.authUser = null
     state.token = ''
   },
 
-  // USER INTERACTIONS
-  SET_LIKE: (state, data) => {
-    const index = state.authUser.likes.length
-    const likedScream = {
-      id: data.id,
-      userHandle: state.authUser.credentials.handle
+  // DISCOVER / SWIPE
+  SET_DISCOVER_PROFILES: (state, profiles) => {
+    state.discoverProfiles = profiles
+  },
+  REMOVE_DISCOVER_PROFILE: (state, userId) => {
+    state.discoverProfiles = state.discoverProfiles.filter(p => p.id !== userId)
+  },
+  SET_NEWEST_PROFILES: (state, profiles) => {
+    state.newestProfiles = profiles
+  },
+  SET_SEARCH_RESULTS: (state, { profiles, total }) => {
+    state.searchResults = profiles
+    state.searchTotal = total
+  },
+  SET_BOOKMARKS: (state, bookmarks) => {
+    state.bookmarks = bookmarks
+  },
+  SET_PROFILE_BOOKMARKED: (state, { userId, value }) => {
+    const updateIn = (arr) => {
+      const p = arr.find(x => x.id === userId)
+      if (p) p.isBookmarked = value
     }
-    Vue.set(state.authUser.likes, index, likedScream)
+    updateIn(state.searchResults)
+    updateIn(state.discoverProfiles)
+    updateIn(state.newestProfiles)
+    updateIn(state.likesSent)
+    updateIn(state.likesReceived)
+    if (state.viewedProfile && state.viewedProfile.id === userId) {
+      state.viewedProfile = Object.assign({}, state.viewedProfile, { isBookmarked: value })
+    }
+    if (!value) state.bookmarks = state.bookmarks.filter(b => b.id !== userId)
   },
-  SET_UNLIKE: (state, data) => {
-    debugger
-    const index = state.authUser.likes.findIndex(scream => scream.id === data.id)
-    Vue.delete(state.authUser.likes, index)
+  SET_VISITORS: (state, visitors) => {
+    state.visitors = visitors
   },
-
-  // SCREAMS/POST
-  SET_SCREAMS: (state, data) => {
-    debugger
-    state.screams = data
+  SET_LIKES_SENT: (state, likes) => {
+    state.likesSent = likes
   },
-  SET_SCREAM: (state, data) => {
-    debugger
-    const index = state.screams.findIndex(scream => scream.id === data.id)
-    Vue.set(state.screams, index, data)
+  SET_LIKES_RECEIVED: (state, likes) => {
+    state.likesReceived = likes
   },
-  SET_NEW_SCREAM: (state, newScream) => {
-    state.screams.unshift(newScream)
-    state.loading.user = false
+  REMOVE_MATCH: (state, matchId) => {
+    state.matches = state.matches.filter(m => m.id !== matchId)
   },
-  SET_DELETE_SCREAM: (state, id) => {
-    const index = state.screams.findIndex(scream => scream.id === id)
-    Vue.delete(state.screams, index)
-  },
-  SET_CLEAN_SCREAM: (state) => state.selectedScream = {},
-  SET_SELECTED_SCREAM: (state, scream) => state.selectedScream = scream,
-
-  // NEW COMMENT IN A SCREAM
-  SET_IN_SELECTED_SCREAM_COMMENTS: (state, commentData) => {
-    const index = state.screams.findIndex(scream => scream.id === commentData.id)
-    state.screams[index].commentCount += 1
-    state.selectedScream.comments.unshift(commentData)
+  SET_LAST_MATCH_RESULT: (state, result) => {
+    state.lastMatchResult = result
   },
 
-  // LOADING/ERRORS
-  SET_LOADING: (state, { name, value }) => state.loading[name] = value,
-  SET_ERROR: (state, error) => state.error = error,
-  SET_LAND: (state, pathName) => state.path = pathName,
-  SET_CLEAR_ERROR: (state) => state.error = '',
-  SET_MODAL: (state, { name, value }) => { state.modals[name] = value },
-
-  // NOTIFICATIONS
-  SET_NOTIFICATIONS: (state, notificationId) => {
-    const index = state.authUser.notifications.findIndex(notification => notification.notificationId === notificationId[0])
-    state.authUser.notifications[index].read = true
+  // MATCHES / CHAT
+  SET_MATCHES: (state, matches) => {
+    state.matches = matches
+  },
+  SET_MATCH_MESSAGES: (state, messages) => {
+    state.currentMatchMessages = messages
+  },
+  ADD_MATCH_MESSAGE: (state, message) => {
+    state.currentMatchMessages.push(message)
   },
 
-  // SET USER IN PROFILE PAGE
-  SET_DATA_USER_PROFILE: (state, userData) => state.dataUserSelected = userData
+  // PROFILE VIEW
+  SET_VIEWED_PROFILE: (state, profile) => {
+    state.viewedProfile = profile
+  },
+
+  // LOADING / ERRORS
+  SET_LOADING: (state, { name, value }) => { state.loading[name] = value },
+  SET_ERROR: (state, error) => { state.error = error },
+  SET_CLEAR_ERROR: (state) => { state.error = null }
 }

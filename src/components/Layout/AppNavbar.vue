@@ -3,37 +3,73 @@
 
         <!--------------------------- NAVBAR TITLE ---------------------------->
         <v-toolbar-title class="headline text-uppercase hover" @click="$router.push('/')">
-            <span>APP</span>
+            <span>Herzklang</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <!--------------------------- END NAVBAR TITLE ---------------------------->
 
-        <!--------------------------- POST BUTTON/MODAL ---------------------------->
-        <AppPostScream v-if="isAuthenticated"></AppPostScream>
-        <!--------------------------- END POST BUTTON/MODAL ---------------------------->
+        <template v-if="isAuthenticated">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn exact to="/search" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.search}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>Suche</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn exact to="/discover" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.discover}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>Entdecken</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn exact to="/matches" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.matches}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>Matches</span>
+            </v-tooltip>
 
-        <!--------------------------- NOTIFICATIONS BUTTON ---------------------------->
-        <AppNotificationsMenu v-if="isAuthenticated" class="mr-2 ml-2"></AppNotificationsMenu>
-        <!--------------------------- END NOTIFICATIONS BUTTON ---------------------------->
+            <v-menu offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-btn class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.more}}</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item to="/likes">
+                        <v-list-item-icon><v-icon>{{svg.heart}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Likes</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/bookmarks">
+                        <v-list-item-icon><v-icon>{{svg.bookmark}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Gemerkt</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/visitors">
+                        <v-list-item-icon><v-icon>{{svg.eye}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Profilbesucher</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
 
-        <!--------------------------- HOME BUTTON ---------------------------->
-        <v-btn exact to="/" class="mr-2" elevation="0" color="#32BCC3" fab small>
-            <v-icon>{{svg.home}}</v-icon>
-        </v-btn>
-        <!--------------------------- END HOME BUTTON ---------------------------->
-
-        <!--------------------------- LOGOUT BUTTON MODAL ---------------------------->
-        <AppLogoutModal v-if="isAuthenticated"></AppLogoutModal>
-        <!--------------------------- END LOGOUT BUTTON MODAL ---------------------------->
+            <v-btn v-if="authUser" exact :to="`/profile/${authUser.handle}`" class="mr-2" elevation="0" color="#32BCC3" fab small>
+                <v-icon>{{svg.profile}}</v-icon>
+            </v-btn>
+            <AppLogoutModal></AppLogoutModal>
+        </template>
 
         <!--------------------------- LOGIN/SIGNUP BUTTONS ---------------------------->
-        <div v-if="!isAuthenticated" class="center">
-            <v-btn exact to="/login" elevation="0" fab color="#32BCC3" small class="mr-2">
-                <v-icon>{{svg.login}}</v-icon>
+        <div v-else class="center">
+            <v-btn exact to="/login" elevation="0" color="#32BCC3" class="mr-2" dark>
+                Login
             </v-btn>
 
-            <v-btn exact to="/signup" elevation="0" fab color="#32BCC3" small>
-                <v-icon>{{svg.logout}}</v-icon>
+            <v-btn exact to="/signup" elevation="0" color="#32BCC3" dark>
+                Registrieren
             </v-btn>
         </div>
         <!--------------------------- END LOGIN/SIGNUP BUTTONS ---------------------------->
@@ -43,31 +79,32 @@
 
 <script>
 // COMPONENTS
-import AppPostScream from '@/components/AppPostScream.vue'
 import AppLogoutModal from '@/components/AppLogoutModal.vue'
-import AppNotificationsMenu from '@/components/Notifications/AppNotificationsMenu.vue'
 
 // VUEX
 import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiAccountPlusOutline, mdiHome, mdiLogin } from '@mdi/js'
+import { mdiCardsHeart, mdiForum, mdiAccountCircle, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline } from '@mdi/js'
 
 export default {
   components: {
-    AppPostScream,
-    AppLogoutModal,
-    AppNotificationsMenu
+    AppLogoutModal
   },
   data: () => ({
     svg: {
-      home: mdiHome,
-      login: mdiLogin,
-      logout: mdiAccountPlusOutline
+      discover: mdiCardsHeart,
+      matches: mdiForum,
+      profile: mdiAccountCircle,
+      search: mdiMagnify,
+      more: mdiDotsVertical,
+      heart: mdiHeart,
+      bookmark: mdiBookmark,
+      eye: mdiEyeOutline
     }
   }),
   computed: {
-    ...mapGetters(['isAuthenticated', 'userNotifications'])
+    ...mapGetters(['isAuthenticated', 'authUser'])
   }
 }
 </script>
