@@ -2,20 +2,20 @@
     <v-container fluid class="gray page-container" style="min-height: 100vh;">
         <div class="content-board mb-5">
             <div class="headline font-weight-bold text-secundario">Suche</div>
-            <div class="caption grey--text mb-4">Vorbelegt mit deinen Angaben aus Registrierung/Profil - du kannst die Filter jederzeit anpassen.</div>
+            <div class="caption grey--text mb-4">Durchstöbere alle Tiere - unabhängig vom Swipe-Status.</div>
             <v-form @submit.prevent="runSearch">
                 <v-row dense>
                     <v-col cols="12" sm="6" md="3">
-                        <v-text-field v-model="filters.q" label="Name oder Stichwort" color="cyan" clearable hide-details></v-text-field>
+                        <v-text-field v-model="filters.q" label="Name, Rasse oder Stichwort" color="cyan" clearable hide-details></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
                         <v-text-field v-model="filters.city" label="Stadt" color="cyan" clearable hide-details></v-text-field>
                     </v-col>
                     <v-col cols="6" sm="3" md="2">
-                        <v-select v-model="filters.gender" :items="genderOptions" item-text="text" item-value="value" label="Geschlecht" color="cyan" clearable hide-details></v-select>
+                        <v-select v-model="filters.species" :items="speciesOptions" item-text="text" item-value="value" label="Tierart" color="cyan" clearable hide-details></v-select>
                     </v-col>
                     <v-col cols="6" sm="3" md="2">
-                        <v-select v-model="filters.party" :items="parties" label="Partei" color="cyan" clearable hide-details></v-select>
+                        <v-select v-model="filters.purpose" :items="purposeOptions" item-text="text" item-value="value" label="Sucht" color="cyan" clearable hide-details></v-select>
                     </v-col>
                     <v-col cols="6" sm="3" md="1">
                         <v-text-field v-model.number="filters.minAge" type="number" label="Alter von" color="cyan" hide-details></v-text-field>
@@ -32,15 +32,15 @@
         </div>
 
         <div class="content-board mb-3" v-if="searchTotal">
-            {{searchTotal}} Profile gefunden - Seite {{page}} von {{totalPages}}
+            {{searchTotal}} Tiere gefunden - Seite {{page}} von {{totalPages}}
         </div>
         <div class="content-board text-center" v-else-if="!loadingUI && searched">
-            Keine Profile gefunden. Versuch es mit weniger Filtern.
+            Keine Tiere gefunden. Versuch es mit weniger Filtern.
         </div>
 
         <div class="card-grid">
-            <router-link v-for="profile in searchResults" :key="profile.id" :to="`/profile/${profile.handle}`" style="text-decoration: none;">
-                <AppProfileCard :profile="profile" show-bookmark @toggle-bookmark="onToggleBookmark"></AppProfileCard>
+            <router-link v-for="pet in searchResults" :key="pet.id" :to="`/pet/${pet.id}`" style="text-decoration: none;">
+                <AppPetCard :pet="pet" show-bookmark @toggle-bookmark="onToggleBookmark"></AppPetCard>
             </router-link>
         </div>
 
@@ -53,25 +53,25 @@
 </template>
 
 <script>
-import AppProfileCard from '@/components/Discover/AppProfileCard.vue'
-import { PARTIES, GENDERS } from '@/constants/parties'
+import AppPetCard from '@/components/Discover/AppPetCard.vue'
+import { SPECIES, PURPOSES } from '@/constants/pets'
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
 import { mapGetters } from 'vuex'
 
 const PAGE_SIZE = 24
 
 export default {
-  components: { AppProfileCard },
+  components: { AppPetCard },
   data: () => ({
-    filters: { q: '', city: '', gender: null, party: null, minAge: null, maxAge: null },
+    filters: { q: '', city: '', species: null, purpose: null, minAge: null, maxAge: null },
     page: 1,
     searched: false,
-    parties: PARTIES,
-    genderOptions: GENDERS,
+    speciesOptions: SPECIES,
+    purposeOptions: PURPOSES,
     svg: { prev: mdiChevronLeft, next: mdiChevronRight }
   }),
   computed: {
-    ...mapGetters(['searchResults', 'searchTotal', 'loadingUI', 'authUser']),
+    ...mapGetters(['searchResults', 'searchTotal', 'loadingUI', 'activePet']),
     totalPages () {
       return Math.max(Math.ceil(this.searchTotal / PAGE_SIZE), 1)
     }
@@ -81,12 +81,11 @@ export default {
     this.runSearch()
   },
   methods: {
-    // Vorbelegung mit den Angaben aus Registrierung/Profil: "gesucht wird"
-    // -> Geschlecht-Filter, eigener Wohnort -> Stadt-Filter.
+    // Vorbelegung mit dem aktiven eigenen Tier: gleiche Tierart, gleicher Zweck.
     defaultFilters () {
-      const gender = (this.authUser && this.authUser.seekingGender !== 'all') ? this.authUser.seekingGender : null
-      const city = (this.authUser && this.authUser.city) || ''
-      return { q: '', city, gender, party: null, minAge: null, maxAge: null }
+      const species = (this.activePet && this.activePet.species) || null
+      const purpose = (this.activePet && this.activePet.purpose !== 'both') ? this.activePet.purpose : null
+      return { q: '', city: '', species, purpose, minAge: null, maxAge: null }
     },
     runSearch () {
       this.page = 1
@@ -100,14 +99,14 @@ export default {
       this.searched = true
       const params = Object.assign({}, this.filters, { page: this.page, pageSize: PAGE_SIZE })
       Object.keys(params).forEach(k => { if (params[k] === null || params[k] === '') delete params[k] })
-      this.$store.dispatch('SEARCH_PROFILES', params)
+      this.$store.dispatch('SEARCH_PETS', params)
     },
     resetFilters () {
       this.filters = this.defaultFilters()
       this.runSearch()
     },
-    onToggleBookmark (profile) {
-      this.$store.dispatch('TOGGLE_BOOKMARK', { userId: profile.id, bookmarked: !!profile.isBookmarked })
+    onToggleBookmark (pet) {
+      this.$store.dispatch('TOGGLE_BOOKMARK', { petId: pet.id, bookmarked: !!pet.isBookmarked })
     }
   }
 }

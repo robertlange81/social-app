@@ -15,13 +15,15 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/me', require('./routes/me'))
-app.use('/api/users', require('./routes/users'))
+app.use('/api/pets', require('./routes/pets'))
 app.use('/api/discover', require('./routes/discover'))
 app.use('/api/swipes', require('./routes/swipes'))
 app.use('/api/matches', require('./routes/matches'))
 app.use('/api/search', require('./routes/search'))
 app.use('/api/bookmarks', require('./routes/bookmarks'))
 app.use('/api/likes', require('./routes/likes'))
+app.use('/api/conversations', require('./routes/conversations'))
+app.use('/api/blocks', require('./routes/blocks'))
 
 app.use((err, req, res, next) => {
   console.error(err)
@@ -29,4 +31,4 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log(`Partnerbörse-API läuft auf http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Tiermatching-API läuft auf http://localhost:${PORT}`))

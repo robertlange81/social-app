@@ -1,28 +1,41 @@
 <template>
-    <v-list-item @click="$router.push({ name: 'chat', params: { id: match.id } })" class="mb-2 background rounded">
+    <v-list-item @click="$router.push({ name: 'chat', params: { id: match.conversationId } })" class="mb-2 background rounded">
         <v-list-item-avatar size="56">
             <v-img v-if="photoSrc" :src="photoSrc"></v-img>
-            <v-icon v-else size="40" color="white" class="background-secundario" style="width:100%; height:100%;">{{svg.account}}</v-icon>
+            <span v-else style="font-size:32px;">{{speciesIcon}}</span>
         </v-list-item-avatar>
         <v-list-item-content>
             <v-list-item-title class="font-weight-bold">
-                @{{match.otherUser.handle}}
-                <v-chip x-small :color="partyColor(match.otherUser.party)" :text-color="partyTextColor(match.otherUser.party)" class="ml-2">
-                    {{match.otherUser.party}}
+                {{match.myPet.name}} 💞 {{match.otherPet.name}}
+                <v-chip x-small :color="purposeColor(match.otherPet.purpose)" text-color="white" class="ml-2">
+                    {{purposeText(match.otherPet.purpose)}}
                 </v-chip>
             </v-list-item-title>
             <v-list-item-subtitle v-if="match.lastMessage">{{match.lastMessage.body}}</v-list-item-subtitle>
-            <v-list-item-subtitle v-else class="font-italic">Noch keine Nachrichten - schreib als Erste:r!</v-list-item-subtitle>
+            <v-list-item-subtitle v-else class="font-italic">Noch keine Nachrichten - schreib als Erster!</v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action-text v-if="match.lastMessage">
-            {{match.lastMessage.createdAt | day}}
-        </v-list-item-action-text>
+        <v-list-item-action @click.stop>
+            <v-btn icon @click="unmatchDialog = true">
+                <v-icon small>{{svg.unmatch}}</v-icon>
+            </v-btn>
+        </v-list-item-action>
+
+        <v-dialog v-model="unmatchDialog" max-width="360" @click.native.stop>
+            <v-card class="pa-4">
+                <div class="title mb-3">Match wirklich auflösen?</div>
+                <div class="mb-4">{{match.myPet.name}} und {{match.otherPet.name}} gelten danach nicht mehr als Match. Der Chatverlauf bleibt erhalten.</div>
+                <div class="text-right">
+                    <v-btn text @click="unmatchDialog = false">Abbrechen</v-btn>
+                    <v-btn color="error" text @click="doUnmatch">Auflösen</v-btn>
+                </div>
+            </v-card>
+        </v-dialog>
     </v-list-item>
 </template>
 
 <script>
-import { PARTY_COLORS, partyTextColor } from '@/constants/parties'
-import { mdiAccount } from '@mdi/js'
+import { PURPOSE_COLORS, purposeLabel, SPECIES_ICON } from '@/constants/pets'
+import { mdiHeartBroken } from '@mdi/js'
 
 const API_ORIGIN = (process.env.VUE_APP_API_URL || 'http://localhost:4000/api/').replace(/\/api\/?$/, '')
 
@@ -34,18 +47,26 @@ export default {
     }
   },
   data: () => ({
-    svg: { account: mdiAccount }
+    unmatchDialog: false,
+    svg: { unmatch: mdiHeartBroken }
   }),
   methods: {
-    partyColor (party) {
-      return PARTY_COLORS[party] || '#607D8B'
+    purposeColor (purpose) {
+      return PURPOSE_COLORS[purpose] || '#607D8B'
     },
-    partyTextColor
+    purposeText: purposeLabel,
+    doUnmatch () {
+      this.unmatchDialog = false
+      this.$store.dispatch('UNMATCH', this.match.id)
+    }
   },
   computed: {
+    speciesIcon () {
+      return SPECIES_ICON[this.match.otherPet.species] || '🐾'
+    },
     photoSrc () {
-      if (!this.match.otherUser.photoUrl) return ''
-      return this.match.otherUser.photoUrl.startsWith('http') ? this.match.otherUser.photoUrl : `${API_ORIGIN}${this.match.otherUser.photoUrl}`
+      if (!this.match.otherPet.photoUrl) return ''
+      return this.match.otherPet.photoUrl.startsWith('http') ? this.match.otherPet.photoUrl : `${API_ORIGIN}${this.match.otherPet.photoUrl}`
     }
   }
 }

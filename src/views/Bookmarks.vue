@@ -3,21 +3,21 @@
         <v-row justify="center">
             <v-col cols="12" sm="8" md="6">
                 <div class="content-board mb-4">
-                    <div class="headline font-weight-bold text-secundario">Gemerkte Profile</div>
+                    <div class="headline font-weight-bold text-secundario">Gemerkte Tiere</div>
                 </div>
 
                 <div class="content-board text-center" v-if="!loadingUI && !bookmarks.length">
-                    Noch keine gemerkten Profile. Klicke auf das Lesezeichen-Symbol bei einem Profil, um es hier zu speichern.
+                    Noch keine gemerkten Tiere. Klicke auf das Lesezeichen-Symbol bei einem Tier, um es hier zu speichern.
                 </div>
 
                 <v-list v-else two-line class="transparent">
-                    <AppUserListItem v-for="user in bookmarks" :key="user.id" :user="user" :subtitle="`${user.age} Jahre, ${user.city || ''}`">
+                    <AppPetListItem v-for="pet in bookmarks" :key="pet.id" :pet="pet" :subtitle="`${pet.breed || ''}, ${pet.age} Jahre, ${pet.city || ''}`">
                         <template v-slot:actions>
-                            <v-btn icon @click="remove(user)">
+                            <v-btn icon @click="remove(pet)">
                                 <v-icon color="#32BCC3">{{svg.bookmarkFilled}}</v-icon>
                             </v-btn>
                         </template>
-                    </AppUserListItem>
+                    </AppPetListItem>
                 </v-list>
             </v-col>
         </v-row>
@@ -25,12 +25,12 @@
 </template>
 
 <script>
-import AppUserListItem from '@/components/Shared/AppUserListItem.vue'
+import AppPetListItem from '@/components/Shared/AppPetListItem.vue'
 import { mdiBookmark } from '@mdi/js'
 import { mapGetters } from 'vuex'
 
 export default {
-  components: { AppUserListItem },
+  components: { AppPetListItem },
   data: () => ({
     svg: { bookmarkFilled: mdiBookmark }
   }),
@@ -41,8 +41,8 @@ export default {
     this.$store.dispatch('FETCH_BOOKMARKS')
   },
   methods: {
-    remove (user) {
-      this.$store.dispatch('TOGGLE_BOOKMARK', { userId: user.id, bookmarked: true })
+    remove (pet) {
+      this.$store.dispatch('TOGGLE_BOOKMARK', { petId: pet.id, bookmarked: true })
     }
   }
 }

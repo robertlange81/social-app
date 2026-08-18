@@ -3,12 +3,20 @@
 
         <!--------------------------- NAVBAR TITLE ---------------------------->
         <v-toolbar-title class="headline text-uppercase hover" @click="$router.push('/')">
-            <span>Herzklang</span>
+            <span>🐾 PFOTENMATCH</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <!--------------------------- END NAVBAR TITLE ---------------------------->
 
         <template v-if="isAuthenticated">
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn exact to="/pets" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.pets}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>Meine Tiere</span>
+            </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn exact to="/search" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
@@ -27,11 +35,11 @@
             </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn exact to="/matches" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
-                        <v-icon>{{svg.matches}}</v-icon>
+                    <v-btn exact to="/chats" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.chats}}</v-icon>
                     </v-btn>
                 </template>
-                <span>Matches</span>
+                <span>Nachrichten</span>
             </v-tooltip>
 
             <v-menu offset-y>
@@ -41,6 +49,10 @@
                     </v-btn>
                 </template>
                 <v-list>
+                    <v-list-item to="/matches">
+                        <v-list-item-icon><v-icon>{{svg.matches}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Matches</v-list-item-title>
+                    </v-list-item>
                     <v-list-item to="/likes">
                         <v-list-item-icon><v-icon>{{svg.heart}}</v-icon></v-list-item-icon>
                         <v-list-item-title>Likes</v-list-item-title>
@@ -53,12 +65,13 @@
                         <v-list-item-icon><v-icon>{{svg.eye}}</v-icon></v-list-item-icon>
                         <v-list-item-title>Profilbesucher</v-list-item-title>
                     </v-list-item>
+                    <v-list-item to="/blocked">
+                        <v-list-item-icon><v-icon>{{svg.block}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Blockierte Nutzer</v-list-item-title>
+                    </v-list-item>
                 </v-list>
             </v-menu>
 
-            <v-btn v-if="authUser" exact :to="`/profile/${authUser.handle}`" class="mr-2" elevation="0" color="#32BCC3" fab small>
-                <v-icon>{{svg.profile}}</v-icon>
-            </v-btn>
             <AppLogoutModal></AppLogoutModal>
         </template>
 
@@ -85,7 +98,7 @@ import AppLogoutModal from '@/components/AppLogoutModal.vue'
 import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiCardsHeart, mdiForum, mdiAccountCircle, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline } from '@mdi/js'
+import { mdiCardsHeart, mdiForum, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline, mdiPaw, mdiMessageTextOutline, mdiCancel } from '@mdi/js'
 
 export default {
   components: {
@@ -95,12 +108,14 @@ export default {
     svg: {
       discover: mdiCardsHeart,
       matches: mdiForum,
-      profile: mdiAccountCircle,
+      pets: mdiPaw,
       search: mdiMagnify,
       more: mdiDotsVertical,
       heart: mdiHeart,
       bookmark: mdiBookmark,
-      eye: mdiEyeOutline
+      eye: mdiEyeOutline,
+      chats: mdiMessageTextOutline,
+      block: mdiCancel
     }
   }),
   computed: {

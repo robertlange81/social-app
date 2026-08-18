@@ -35,52 +35,70 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "auth" */ './views/Signup.vue')
     },
     {
+      path: '/pets',
+      name: 'my-pets',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "matching" */ './views/MyPets.vue')
+    },
+    {
       path: '/discover',
       name: 'discover',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Discover.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Discover.vue')
     },
     {
       path: '/matches',
       name: 'matches',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Matches.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Matches.vue')
     },
     {
-      path: '/matches/:id',
+      path: '/chats',
+      name: 'chats',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "matching" */ './views/Chats.vue')
+    },
+    {
+      path: '/chat/:id',
       name: 'chat',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Chat.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Chat.vue')
     },
     {
-      path: '/profile/:handle',
-      name: 'profile',
+      path: '/blocked',
+      name: 'blocked',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/UsersProfile.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/BlockedUsers.vue')
+    },
+    {
+      path: '/pet/:id',
+      name: 'pet-profile',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "matching" */ './views/PetProfile.vue')
     },
     {
       path: '/search',
       name: 'search',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Search.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Search.vue')
     },
     {
       path: '/bookmarks',
       name: 'bookmarks',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Bookmarks.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Bookmarks.vue')
     },
     {
       path: '/visitors',
       name: 'visitors',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Visitors.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Visitors.vue')
     },
     {
       path: '/likes',
       name: 'likes',
       meta: { requiresAuth: true },
-      component: () => import(/* webpackChunkName: "dating" */ './views/Likes.vue')
+      component: () => import(/* webpackChunkName: "matching" */ './views/Likes.vue')
     }
   ]
 })

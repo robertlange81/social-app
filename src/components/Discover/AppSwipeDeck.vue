@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div v-if="!profiles.length" class="content-board text-center pa-8">
-            Keine weiteren Profile gerade verfügbar. Schau später nochmal vorbei oder nutze die
-            <router-link to="/search">Suche</router-link>, um alle Profile zu durchstöbern.
+        <div v-if="!pets.length" class="content-board text-center pa-8">
+            Keine weiteren Tiere gerade verfügbar. Schau später nochmal vorbei oder nutze die
+            <router-link to="/search">Suche</router-link>, um alle Tiere zu durchstöbern.
         </div>
         <div v-else class="deck-stack">
-            <AppProfileCard v-if="profiles[2]" :profile="profiles[2]" class="deck-card" style="transform: translateY(16px) scale(0.9); z-index:1;" />
-            <AppProfileCard v-if="profiles[1]" :profile="profiles[1]" class="deck-card" style="transform: translateY(8px) scale(0.95); z-index:2;" />
+            <AppPetCard v-if="pets[2]" :pet="pets[2]" class="deck-card" style="transform: translateY(16px) scale(0.9); z-index:1;" />
+            <AppPetCard v-if="pets[1]" :pet="pets[1]" class="deck-card" style="transform: translateY(8px) scale(0.95); z-index:2;" />
             <div
-                v-if="profiles[0]"
+                v-if="pets[0]"
                 class="deck-card deck-card--top"
                 :style="topStyle"
                 @pointerdown="onPointerDown"
@@ -16,13 +16,13 @@
                 @pointerup="onPointerUp"
                 @pointercancel="onPointerUp"
             >
-                <AppProfileCard :profile="profiles[0]" />
+                <AppPetCard :pet="pets[0]" />
                 <div class="swipe-badge swipe-badge--like" :style="{opacity: likeOpacity}">GEFÄLLT MIR</div>
                 <div class="swipe-badge swipe-badge--nope" :style="{opacity: nopeOpacity}">NEIN</div>
             </div>
         </div>
 
-        <div class="text-center mt-5" v-if="profiles[0]">
+        <div class="text-center mt-5" v-if="pets[0]">
             <v-btn fab color="#E0E0E0" class="mx-3" @click="triggerSwipe('pass')">
                 <v-icon color="grey darken-2">{{svg.close}}</v-icon>
             </v-btn>
@@ -34,15 +34,15 @@
 </template>
 
 <script>
-import AppProfileCard from './AppProfileCard.vue'
+import AppPetCard from './AppPetCard.vue'
 import { mdiClose, mdiHeart } from '@mdi/js'
 
 const SWIPE_THRESHOLD = 100
 
 export default {
-  components: { AppProfileCard },
+  components: { AppPetCard },
   props: {
-    profiles: {
+    pets: {
       type: Array,
       default: () => []
     }
@@ -98,14 +98,14 @@ export default {
       else this.dx = 0
     },
     triggerSwipe (direction) {
-      if (this.exiting || !this.profiles[0]) return
+      if (this.exiting || !this.pets[0]) return
       this.finishSwipe(direction)
     },
     finishSwipe (direction) {
       this.exiting = direction === 'like' ? 'right' : 'left'
-      const profile = this.profiles[0]
+      const pet = this.pets[0]
       setTimeout(() => {
-        this.$emit('swipe', { userId: profile.id, direction })
+        this.$emit('swipe', { petId: pet.id, direction })
         this.dx = 0
         this.exiting = null
       }, 300)

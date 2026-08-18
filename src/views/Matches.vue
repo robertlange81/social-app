@@ -6,7 +6,7 @@
                     <div class="headline font-weight-bold text-secundario">Deine Matches</div>
                 </div>
                 <div v-if="!loadingUI && !matches.length" class="content-board text-center pa-6">
-                    Noch keine Matches. Geh zu "Entdecken" und finde jemanden!
+                    Noch keine Matches. Geh zu "Entdecken" und finde einen Partner für dein Tier!
                 </div>
                 <v-list v-else two-line class="transparent">
                     <AppMatchListItem v-for="match in matches" :key="match.id" :match="match"></AppMatchListItem>

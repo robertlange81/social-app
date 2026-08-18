@@ -5,16 +5,27 @@ export default {
   loadingUser: state => state.loading.user,
   loadingUI: state => state.loading.ui,
   loadingForm: state => state.loading.form,
-  discoverProfiles: state => state.discoverProfiles,
-  newestProfiles: state => state.newestProfiles,
+
+  myPets: state => state.myPets,
+  activePetId: state => state.activePetId,
+  activePet: state => state.myPets.find(p => p.id === state.activePetId) || state.myPets[0] || null,
+
+  discoverPets: state => state.discoverPets,
+  newestPets: state => state.newestPets,
+  lastMatchResult: state => state.lastMatchResult,
+
   searchResults: state => state.searchResults,
   searchTotal: state => state.searchTotal,
+
   bookmarks: state => state.bookmarks,
   visitors: state => state.visitors,
   likesSent: state => state.likesSent,
   likesReceived: state => state.likesReceived,
-  lastMatchResult: state => state.lastMatchResult,
+
   matches: state => state.matches,
-  currentMatchMessages: state => state.currentMatchMessages,
-  viewedProfile: state => state.viewedProfile
+  conversations: state => state.conversations,
+  currentConversation: state => state.currentConversation,
+  currentConversationMessages: state => state.currentConversationMessages,
+  blockedUsers: state => state.blockedUsers,
+  viewedPet: state => state.viewedPet
 }

@@ -7,8 +7,10 @@ export default {
   error: null,
   token: localStorage.getItem('authToken') || '',
   authUser: null,
-  discoverProfiles: [],
-  newestProfiles: [],
+  myPets: [],
+  activePetId: localStorage.getItem('activePetId') || null,
+  discoverPets: [],
+  newestPets: [],
   searchResults: [],
   searchTotal: 0,
   bookmarks: [],
@@ -17,6 +19,9 @@ export default {
   likesReceived: [],
   lastMatchResult: null,
   matches: [],
-  currentMatchMessages: [],
-  viewedProfile: null
+  conversations: [],
+  currentConversation: null,
+  currentConversationMessages: [],
+  blockedUsers: [],
+  viewedPet: null
 }
