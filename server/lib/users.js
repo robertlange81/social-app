@@ -6,6 +6,11 @@ const PARTIES = require('../constants/parties')
 const GENDERS = ['male', 'female', 'diverse']
 const SEEKING_GENDERS = ['male', 'female', 'diverse', 'all']
 const MIN_AGE = 18
+const MAX_HANDLE_LENGTH = 50
+const MAX_EMAIL_LENGTH = 254
+const MAX_PASSWORD_LENGTH = 128
+const MAX_CITY_LENGTH = 100
+const MAX_BIO_LENGTH = 2000
 
 function computeAge (birthdate) {
   const birth = new Date(birthdate)
@@ -22,12 +27,18 @@ function validateSignupInput (data) {
   const errors = []
   if (!data.handle || typeof data.handle !== 'string' || data.handle.trim().length < 2) {
     errors.push('Name ist erforderlich (mind. 2 Zeichen).')
+  } else if (data.handle.trim().length > MAX_HANDLE_LENGTH) {
+    errors.push(`Name darf maximal ${MAX_HANDLE_LENGTH} Zeichen lang sein.`)
   }
   if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.push('Eine gültige E-Mail-Adresse ist erforderlich.')
+  } else if (data.email.length > MAX_EMAIL_LENGTH) {
+    errors.push(`E-Mail-Adresse darf maximal ${MAX_EMAIL_LENGTH} Zeichen lang sein.`)
   }
   if (!data.password || data.password.length < 6) {
     errors.push('Das Passwort muss mindestens 6 Zeichen lang sein.')
+  } else if (data.password.length > MAX_PASSWORD_LENGTH) {
+    errors.push(`Das Passwort darf maximal ${MAX_PASSWORD_LENGTH} Zeichen lang sein.`)
   }
   if (!data.birthdate || isNaN(new Date(data.birthdate).getTime())) {
     errors.push('Ein gültiges Geburtsdatum ist erforderlich.')
@@ -48,6 +59,12 @@ function validateSignupInput (data) {
   }
   if (!data.consentPolitical) {
     errors.push('Du musst der Verarbeitung deiner Partei-Angabe gesondert zustimmen.')
+  }
+  if (data.city && String(data.city).trim().length > MAX_CITY_LENGTH) {
+    errors.push(`Wohnort darf maximal ${MAX_CITY_LENGTH} Zeichen lang sein.`)
+  }
+  if (data.bio && String(data.bio).trim().length > MAX_BIO_LENGTH) {
+    errors.push(`Beschreibung darf maximal ${MAX_BIO_LENGTH} Zeichen lang sein.`)
   }
   return errors
 }

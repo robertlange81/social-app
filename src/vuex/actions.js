@@ -1,4 +1,3 @@
-import axios from 'axios'
 import Api from '../service/Api'
 
 function extractError (error) {
@@ -11,11 +10,10 @@ function extractError (error) {
 export default {
 
   // AUTH
-  SIGN_IN: ({ dispatch, commit }, { email, password }) => new Promise((resolve, reject) => {
+  SIGN_IN: ({ commit }, { email, password }) => new Promise((resolve, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
     Api().post('auth/login', { email, password })
       .then((res) => {
-        dispatch('AUTH_SUCCESS', res.data.token)
         commit('SET_AUTH_USER', res.data.user)
         commit('SET_LOADING', { name: 'form', value: false })
         resolve()
@@ -26,11 +24,10 @@ export default {
         reject(error)
       })
   }),
-  SIGN_UP: ({ dispatch, commit }, formNewUser) => new Promise((resolve, reject) => {
+  SIGN_UP: ({ commit }, formNewUser) => new Promise((resolve, reject) => {
     commit('SET_LOADING', { name: 'form', value: true })
     Api().post('auth/signup', formNewUser)
       .then((res) => {
-        dispatch('AUTH_SUCCESS', res.data.token)
         commit('SET_AUTH_USER', res.data.user)
         commit('SET_LOADING', { name: 'form', value: false })
         resolve(res)
@@ -41,28 +38,20 @@ export default {
         reject(error)
       })
   }),
-  LOGOUT_USER: ({ commit }) => new Promise((resolve) => {
-    localStorage.removeItem('authToken')
-    delete axios.defaults.headers.common['Authorization']
-    commit('SET_USER_UNAUTHENTICATED')
-    resolve()
-  }),
-  AUTH_SUCCESS: ({ commit }, token) => {
-    localStorage.setItem('authToken', token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    commit('SET_AUTHORIZATION', token)
-  },
-  AUTH_USER: ({ commit, dispatch }, token) => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    commit('SET_AUTHORIZATION', token)
-    dispatch('FETCH_AUTH_USER')
+  LOGOUT_USER: ({ commit }) => {
+    return Api().post('auth/logout').catch(() => {}).then(() => {
+      commit('SET_USER_UNAUTHENTICATED')
+    })
   },
   CLEAR_ERROR: ({ commit }) => commit('SET_CLEAR_ERROR'),
 
-  FETCH_AUTH_USER: ({ commit, dispatch }) => {
-    Api().get('me')
+  FETCH_AUTH_USER: ({ commit }, options = {}) => {
+    return Api().get('me')
       .then((res) => commit('SET_AUTH_USER', res.data.user))
-      .catch(() => dispatch('LOGOUT_USER'))
+      .catch((error) => {
+        commit('SET_USER_UNAUTHENTICATED')
+        if (!options.silent) throw error
+      })
   },
 
   // EDIT AUTH USER PROFILE
@@ -281,6 +270,13 @@ export default {
     return Api().delete(`blocks/${userId}`)
       .then(() => commit('REMOVE_BLOCKED_USER', userId))
       .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+  REPORT_USER: ({ commit }, payload) => {
+    return Api().post('reports', payload)
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        throw error
+      })
   },
 
   // VIEW OTHER PROFILE

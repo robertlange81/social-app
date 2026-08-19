@@ -43,9 +43,9 @@ export default {
       this.$store.dispatch('CLEAR_MATCH_RESULT')
     },
     goToChat () {
-      const matchId = this.lastMatchResult.matchId
+      const conversationId = this.lastMatchResult.conversationId
       this.$store.dispatch('CLEAR_MATCH_RESULT')
-      this.$router.push({ name: 'chat', params: { id: matchId } })
+      this.$router.push({ name: 'chat', params: { id: conversationId } })
     }
   }
 }

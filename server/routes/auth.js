@@ -9,17 +9,28 @@ function issueToken (user) {
   return jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: '30d' })
 }
 
+function setAuthCookie (res, token) {
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    path: '/'
+  })
+}
+
 router.post('/signup', (req, res) => {
   const errors = validateSignupInput(req.body || {})
   if (errors.length) return res.status(400).json({ error: errors.join(' ') })
 
-  const existing = db.prepare('SELECT id FROM users WHERE email = ? OR handle = ?')
+  const existing = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?) OR lower(handle) = lower(?)')
     .get(req.body.email.trim().toLowerCase(), req.body.handle.trim())
   if (existing) return res.status(409).json({ error: 'E-Mail oder Name wird bereits verwendet.' })
 
   const user = createUser(req.body)
   const token = issueToken(user)
-  res.status(201).json({ token, user: serializeUser(user, { includeEmail: true }) })
+  setAuthCookie(res, token)
+  res.status(201).json({ user: serializeUser(user, { includeEmail: true }) })
 })
 
 router.post('/login', (req, res) => {
@@ -32,7 +43,13 @@ router.post('/login', (req, res) => {
   }
 
   const token = issueToken(user)
-  res.json({ token, user: serializeUser(user, { includeEmail: true }) })
+  setAuthCookie(res, token)
+  res.json({ user: serializeUser(user, { includeEmail: true }) })
+})
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('authToken', { path: '/', sameSite: 'lax', secure: process.env.NODE_ENV === 'production' })
+  res.json({ loggedOut: true })
 })
 
 module.exports = router

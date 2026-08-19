@@ -65,6 +65,12 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "dating" */ './views/BlockedUsers.vue')
     },
     {
+      path: '/settings',
+      name: 'settings',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Settings.vue')
+    },
+    {
       path: '/profile/:handle',
       name: 'profile',
       meta: { requiresAuth: true },

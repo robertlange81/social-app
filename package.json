@@ -2,25 +2,28 @@
   "name": "social-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
     "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
+    "test:api": "npm --prefix server test",
     "server": "npm --prefix server run dev",
     "server:install": "npm --prefix server install",
     "server:seed": "npm --prefix server run seed",
     "dev": "concurrently -n server,frontend -c blue,green \"npm run server\" \"npm run serve\""
   },
   "dependencies": {
-    "axios": "^0.21.4",
+    "axios": "^1.19.0",
     "core-js": "^2.6.5",
     "dayjs": "^1.8.16",
-    "jwt-decode": "^2.2.0",
-    "vue": "^2.6.10",
+    "vue": "^2.7.16",
     "vue-content-loader": "^0.2.2",
     "vue-router": "^3.0.3",
-    "vuetify": "^2.0.0",
+    "vuetify": "^2.7.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -32,15 +35,15 @@
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
-    "concurrently": "^8.2.2",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
+    "concurrently": "^8.2.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "sass": "^1.17.4",
+    "sass": "^1.32.13",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-vuetify": "^0.6.3",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.7.16",
     "vuetify-loader": "^1.2.2"
   }
 }

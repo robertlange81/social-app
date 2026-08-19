@@ -50,6 +50,23 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS conversation_reads (
+  conversation_id TEXT NOT NULL REFERENCES conversations(id),
+  user_id TEXT NOT NULL REFERENCES users(id),
+  read_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY(conversation_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS reports (
+  id TEXT PRIMARY KEY,
+  reporter_id TEXT NOT NULL REFERENCES users(id),
+  reported_id TEXT NOT NULL REFERENCES users(id),
+  reason TEXT NOT NULL,
+  details TEXT,
+  status TEXT NOT NULL DEFAULT 'open',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS blocks (
   id TEXT PRIMARY KEY,
   blocker_id TEXT NOT NULL REFERENCES users(id),
@@ -79,6 +96,7 @@ CREATE INDEX IF NOT EXISTS idx_matches_user_b ON matches(user_b_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_user_a ON conversations(user_a_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_user_b ON conversations(user_b_id);
 CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_reports_reported ON reports(reported_id);
 CREATE INDEX IF NOT EXISTS idx_blocks_blocker ON blocks(blocker_id);
 CREATE INDEX IF NOT EXISTS idx_blocks_blocked ON blocks(blocked_id);
 CREATE INDEX IF NOT EXISTS idx_bookmarks_from ON bookmarks(from_user_id);

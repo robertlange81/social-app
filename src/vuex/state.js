@@ -5,7 +5,6 @@ export default {
     ui: false
   },
   error: null,
-  token: localStorage.getItem('authToken') || '',
   authUser: null,
   discoverProfiles: [],
   newestProfiles: [],

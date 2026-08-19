@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({
   storage,
-  limits: { fileSize: 20 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (!/^image\/(jpeg|png|webp|gif|heic|heif)$/.test(file.mimetype)) {
       return cb(new Error('Nur Bilddateien (JPG, PNG, WEBP, GIF) sind erlaubt.'))
@@ -37,7 +37,7 @@ function handleUpload (req, res, next) {
   upload.single('image')(req, res, (err) => {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'Das Bild ist zu groß (maximal 20 MB).' })
+        return res.status(400).json({ error: 'Das Bild ist zu groß (maximal 10 MB).' })
       }
       return res.status(400).json({ error: err.message || 'Bild-Upload fehlgeschlagen.' })
     }
@@ -86,14 +86,14 @@ router.put('/', requireAuth, (req, res) => {
   if (handle !== undefined) {
     const trimmed = String(handle).trim()
     if (trimmed.length < 2) return res.status(400).json({ error: 'Name ist erforderlich (mind. 2 Zeichen).' })
-    const existing = db.prepare('SELECT id FROM users WHERE handle = ? AND id != ?').get(trimmed, req.user.id)
+    const existing = db.prepare('SELECT id FROM users WHERE lower(handle) = lower(?) AND id != ?').get(trimmed, req.user.id)
     if (existing) return res.status(409).json({ error: 'Dieser Name wird bereits verwendet.' })
     updates.handle = trimmed
   }
   if (email !== undefined) {
     const trimmed = String(email).trim().toLowerCase()
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return res.status(400).json({ error: 'Eine gültige E-Mail-Adresse ist erforderlich.' })
-    const existing = db.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(trimmed, req.user.id)
+    const existing = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?) AND id != ?').get(trimmed, req.user.id)
     if (existing) return res.status(409).json({ error: 'Diese E-Mail-Adresse wird bereits verwendet.' })
     updates.email = trimmed
   }
@@ -142,12 +142,56 @@ router.post('/photo', requireAuth, handleUpload, async (req, res) => {
 
     const photoUrl = `/uploads/${cartoonFilename}`
     db.prepare('UPDATE users SET photo_url = ? WHERE id = ?').run(photoUrl, req.user.id)
+    if (req.user.photo_url && req.user.photo_url.startsWith('/uploads/') && req.user.photo_url !== photoUrl) {
+      fs.unlink(path.join(uploadsDir, path.basename(req.user.photo_url)), () => {})
+    }
     const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id)
     res.json({ user: serializeUser(updated, { includeEmail: true }) })
   } catch (err) {
     fs.unlink(req.file.path, () => {})
     res.status(500).json({ error: 'Bild konnte nicht verarbeitet werden. Bitte ein anderes Bild versuchen.' })
   }
+})
+
+router.get('/export', requireAuth, (req, res) => {
+  const conversations = db.prepare('SELECT * FROM conversations WHERE user_a_id = ? OR user_b_id = ?').all(req.user.id, req.user.id)
+  const messages = conversations.flatMap(conversation => db.prepare('SELECT id, conversation_id, sender_id, body, created_at FROM messages WHERE conversation_id = ? ORDER BY created_at').all(conversation.id))
+  res.setHeader('Content-Disposition', 'attachment; filename="herzklang-export.json"')
+  res.json({
+    exportedAt: new Date().toISOString(),
+    profile: serializeUser(req.user, { includeEmail: true }),
+    conversations,
+    messages,
+    likes: db.prepare('SELECT * FROM swipes WHERE from_user_id = ? OR to_user_id = ?').all(req.user.id, req.user.id),
+    bookmarks: db.prepare('SELECT * FROM bookmarks WHERE from_user_id = ?').all(req.user.id)
+  })
+})
+
+router.delete('/', requireAuth, (req, res) => {
+  const password = req.body && req.body.password
+  if (!password || !bcrypt.compareSync(password, req.user.password_hash)) {
+    return res.status(403).json({ error: 'Passwort ist falsch.' })
+  }
+  const conversationIds = db.prepare('SELECT id FROM conversations WHERE user_a_id = ? OR user_b_id = ?').all(req.user.id, req.user.id).map(row => row.id)
+  db.transaction(() => {
+    for (const id of conversationIds) {
+      db.prepare('DELETE FROM conversation_reads WHERE conversation_id = ?').run(id)
+      db.prepare('DELETE FROM messages WHERE conversation_id = ?').run(id)
+    }
+    db.prepare('DELETE FROM conversations WHERE user_a_id = ? OR user_b_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM reports WHERE reporter_id = ? OR reported_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM matches WHERE user_a_id = ? OR user_b_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM swipes WHERE from_user_id = ? OR to_user_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM bookmarks WHERE from_user_id = ? OR to_user_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM profile_views WHERE viewer_id = ? OR viewed_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM blocks WHERE blocker_id = ? OR blocked_id = ?').run(req.user.id, req.user.id)
+    db.prepare('DELETE FROM users WHERE id = ?').run(req.user.id)
+  })()
+  if (req.user.photo_url && req.user.photo_url.startsWith('/uploads/')) {
+    fs.unlink(path.join(uploadsDir, path.basename(req.user.photo_url)), () => {})
+  }
+  res.clearCookie('authToken', { path: '/', sameSite: 'lax', secure: process.env.NODE_ENV === 'production' })
+  res.json({ deleted: true })
 })
 
 module.exports = router
