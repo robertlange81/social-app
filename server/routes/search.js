@@ -3,6 +3,7 @@ const db = require('../db')
 const requireAuth = require('../middleware/auth')
 const { serializeUser, computeAge, GENDERS } = require('../lib/users')
 const { attachBookmarked } = require('../lib/bookmarks')
+const { isBlocked } = require('../lib/conversations')
 const PARTIES = require('../constants/parties')
 
 const router = express.Router()
@@ -20,6 +21,7 @@ router.get('/', requireAuth, (req, res) => {
   }
 
   let rows = db.prepare('SELECT * FROM users WHERE id != ?').all(req.user.id)
+  rows = rows.filter(u => !isBlocked(req.user.id, u.id))
 
   if (city) {
     const needle = city.trim().toLowerCase()

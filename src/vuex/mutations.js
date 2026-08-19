@@ -59,15 +59,34 @@ export default {
     state.lastMatchResult = result
   },
 
-  // MATCHES / CHAT
+  // MATCHES
   SET_MATCHES: (state, matches) => {
     state.matches = matches
   },
-  SET_MATCH_MESSAGES: (state, messages) => {
-    state.currentMatchMessages = messages
+
+  // UNTERHALTUNGEN / CHAT (auch ohne Match möglich)
+  SET_CONVERSATIONS: (state, conversations) => {
+    state.conversations = conversations
   },
-  ADD_MATCH_MESSAGE: (state, message) => {
-    state.currentMatchMessages.push(message)
+  SET_CURRENT_CONVERSATION: (state, conversation) => {
+    state.currentConversation = conversation
+  },
+  REMOVE_CONVERSATION: (state, conversationId) => {
+    state.conversations = state.conversations.filter(c => c.id !== conversationId)
+  },
+  SET_CONVERSATION_MESSAGES: (state, messages) => {
+    state.currentConversationMessages = messages
+  },
+  ADD_CONVERSATION_MESSAGE: (state, message) => {
+    state.currentConversationMessages.push(message)
+  },
+
+  // BLOCKIEREN
+  SET_BLOCKED_USERS: (state, users) => {
+    state.blockedUsers = users
+  },
+  REMOVE_BLOCKED_USER: (state, userId) => {
+    state.blockedUsers = state.blockedUsers.filter(u => u.id !== userId)
   },
 
   // PROFILE VIEW

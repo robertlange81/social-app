@@ -3,6 +3,7 @@ const db = require('../db')
 const requireAuth = require('../middleware/auth')
 const { serializeUser, computeAge } = require('../lib/users')
 const { attachBookmarked } = require('../lib/bookmarks')
+const { isBlocked } = require('../lib/conversations')
 const PARTIES = require('../constants/parties')
 
 const router = express.Router()
@@ -30,7 +31,7 @@ router.get('/', requireAuth, (req, res) => {
     LIMIT 50
   `).all({ meId: me.id, meSeeking: me.seeking_gender, meGender: me.gender })
 
-  let filtered = candidates
+  let filtered = candidates.filter(u => !isBlocked(me.id, u.id))
   if (party) filtered = filtered.filter(u => u.party === party)
   if (minAge) filtered = filtered.filter(u => computeAge(u.birthdate) >= Number(minAge))
   if (maxAge) filtered = filtered.filter(u => computeAge(u.birthdate) <= Number(maxAge))

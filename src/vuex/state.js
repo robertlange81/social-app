@@ -17,6 +17,9 @@ export default {
   likesReceived: [],
   lastMatchResult: null,
   matches: [],
-  currentMatchMessages: [],
+  conversations: [],
+  currentConversation: null,
+  currentConversationMessages: [],
+  blockedUsers: [],
   viewedProfile: null
 }

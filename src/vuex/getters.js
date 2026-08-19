@@ -15,6 +15,9 @@ export default {
   likesReceived: state => state.likesReceived,
   lastMatchResult: state => state.lastMatchResult,
   matches: state => state.matches,
-  currentMatchMessages: state => state.currentMatchMessages,
+  conversations: state => state.conversations,
+  currentConversation: state => state.currentConversation,
+  currentConversationMessages: state => state.currentConversationMessages,
+  blockedUsers: state => state.blockedUsers,
   viewedProfile: state => state.viewedProfile
 }

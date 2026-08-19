@@ -22,6 +22,8 @@ app.use('/api/matches', require('./routes/matches'))
 app.use('/api/search', require('./routes/search'))
 app.use('/api/bookmarks', require('./routes/bookmarks'))
 app.use('/api/likes', require('./routes/likes'))
+app.use('/api/conversations', require('./routes/conversations'))
+app.use('/api/blocks', require('./routes/blocks'))
 
 app.use((err, req, res, next) => {
   console.error(err)

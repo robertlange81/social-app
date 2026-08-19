@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid')
 const db = require('../db')
 const requireAuth = require('../middleware/auth')
 const { serializeUser } = require('../lib/users')
+const { isBlocked, findOrCreateConversation } = require('../lib/conversations')
 
 const router = express.Router()
 
@@ -16,6 +17,7 @@ router.post('/', requireAuth, (req, res) => {
   }
   const target = db.prepare('SELECT * FROM users WHERE id = ?').get(toUserId)
   if (!target) return res.status(404).json({ error: 'Nutzer nicht gefunden.' })
+  if (isBlocked(req.user.id, toUserId)) return res.status(403).json({ error: 'Dieses Profil ist für dich nicht verfügbar.' })
 
   db.prepare(`
     INSERT INTO swipes (id, from_user_id, to_user_id, direction)
@@ -37,7 +39,8 @@ router.post('/', requireAuth, (req, res) => {
   `).run(uuidv4(), userA, userB)
 
   const match = db.prepare('SELECT * FROM matches WHERE user_a_id = ? AND user_b_id = ?').get(userA, userB)
-  res.json({ matched: true, matchId: match.id, otherUser: serializeUser(target) })
+  const conversation = findOrCreateConversation(req.user.id, toUserId)
+  res.json({ matched: true, matchId: match.id, conversationId: conversation.id, otherUser: serializeUser(target) })
 })
 
 module.exports = router

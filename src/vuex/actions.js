@@ -197,14 +197,12 @@ export default {
       })
   },
 
-  // UNMATCH
+  // MATCHES
   UNMATCH: ({ commit }, matchId) => {
     return Api().delete(`matches/${matchId}`)
       .then(() => commit('REMOVE_MATCH', matchId))
       .catch((error) => commit('SET_ERROR', extractError(error)))
   },
-
-  // MATCHES / CHAT
   FETCH_MATCHES: ({ commit }) => {
     commit('SET_LOADING', { name: 'ui', value: true })
     return Api().get('matches')
@@ -217,20 +215,72 @@ export default {
         commit('SET_LOADING', { name: 'ui', value: false })
       })
   },
-  FETCH_MATCH_MESSAGES: ({ commit }, matchId) => {
-    return Api().get(`matches/${matchId}/messages`)
-      .then((res) => commit('SET_MATCH_MESSAGES', res.data.messages))
+
+  // UNTERHALTUNGEN / CHAT (auch ohne Match möglich, chatten mit beliebigen Nutzern)
+  FETCH_CONVERSATIONS: ({ commit }) => {
+    commit('SET_LOADING', { name: 'ui', value: true })
+    return Api().get('conversations')
+      .then((res) => {
+        commit('SET_CONVERSATIONS', res.data.conversations)
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        commit('SET_LOADING', { name: 'ui', value: false })
+      })
+  },
+  START_CONVERSATION: ({ commit }, toUserId) => {
+    return Api().post('conversations', { toUserId })
+      .then((res) => res.data.conversation)
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        throw error
+      })
+  },
+  FETCH_CONVERSATION: ({ commit }, conversationId) => {
+    return Api().get(`conversations/${conversationId}`)
+      .then((res) => commit('SET_CURRENT_CONVERSATION', res.data.conversation))
       .catch((error) => commit('SET_ERROR', extractError(error)))
   },
-  SEND_MATCH_MESSAGE: ({ commit }, { matchId, body }) => {
-    return Api().post(`matches/${matchId}/messages`, { body })
+  FETCH_CONVERSATION_MESSAGES: ({ commit }, conversationId) => {
+    return Api().get(`conversations/${conversationId}/messages`)
+      .then((res) => commit('SET_CONVERSATION_MESSAGES', res.data.messages))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+  SEND_CONVERSATION_MESSAGE: ({ commit }, { conversationId, body }) => {
+    return Api().post(`conversations/${conversationId}/messages`, { body })
       .then((res) => {
-        commit('ADD_MATCH_MESSAGE', res.data.message)
+        commit('ADD_CONVERSATION_MESSAGE', res.data.message)
         return res.data.message
       })
       .catch((error) => {
         commit('SET_ERROR', extractError(error))
+        throw error
       })
+  },
+  DELETE_CONVERSATION: ({ commit }, conversationId) => {
+    return Api().delete(`conversations/${conversationId}`)
+      .then(() => commit('REMOVE_CONVERSATION', conversationId))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+
+  // BLOCKIEREN
+  FETCH_BLOCKED: ({ commit }) => {
+    return Api().get('blocks')
+      .then((res) => commit('SET_BLOCKED_USERS', res.data.blocked))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
+  },
+  BLOCK_USER: ({ commit }, userId) => {
+    return Api().post('blocks', { userId })
+      .catch((error) => {
+        commit('SET_ERROR', extractError(error))
+        throw error
+      })
+  },
+  UNBLOCK_USER: ({ commit }, userId) => {
+    return Api().delete(`blocks/${userId}`)
+      .then(() => commit('REMOVE_BLOCKED_USER', userId))
+      .catch((error) => commit('SET_ERROR', extractError(error)))
   },
 
   // VIEW OTHER PROFILE

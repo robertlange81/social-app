@@ -59,7 +59,7 @@
                             <div class="mt-5 center" v-if="isOwnProfile">
                                 <AppEditProfile :data="data"></AppEditProfile>
                             </div>
-                            <div class="mt-5 center" v-else-if="isAuthenticated">
+                            <div class="mt-5 center" v-else-if="isAuthenticated" style="gap: 8px; flex-wrap: wrap;">
                                 <v-btn
                                     :color="data.isBookmarked ? '#32BCC3' : '#E0E0E0'"
                                     :dark="data.isBookmarked"
@@ -69,11 +69,30 @@
                                     <v-icon left small>{{data.isBookmarked ? svg.bookmarkFilled : svg.bookmarkOutline}}</v-icon>
                                     {{data.isBookmarked ? 'Gemerkt' : 'Merken'}}
                                 </v-btn>
+                                <v-btn color="#32BCC3" dark elevation="0" :loading="messaging" @click="messageUser">
+                                    <v-icon left small>{{svg.message}}</v-icon>
+                                    Nachricht senden
+                                </v-btn>
+                                <v-btn color="#E0E0E0" elevation="0" @click="blockDialog = true">
+                                    <v-icon left small>{{svg.block}}</v-icon>
+                                    Blockieren
+                                </v-btn>
                             </div>
                         </v-col>
                     </v-row>
             </v-col>
         </v-row>
+
+        <v-dialog v-model="blockDialog" max-width="360">
+            <v-card class="pa-4">
+                <div class="title mb-3">@{{data.handle}} blockieren?</div>
+                <div class="mb-4">Ihr könnt euch danach nicht mehr sehen oder schreiben.</div>
+                <div class="text-right">
+                    <v-btn text @click="blockDialog = false">Abbrechen</v-btn>
+                    <v-btn color="error" text @click="confirmBlock">Blockieren</v-btn>
+                </div>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -85,7 +104,7 @@ import AppEditProfile from '@/components/Profile/AppEditProfile.vue'
 import { PARTY_COLORS, partyTextColor, SEEKING_GENDERS } from '@/constants/parties'
 
 // SVG ICONS
-import { mdiMapMarker, mdiCalendar, mdiCameraRetakeOutline, mdiAccount, mdiBankOutline, mdiHeart, mdiBookmark, mdiBookmarkOutline } from '@mdi/js'
+import { mdiMapMarker, mdiCalendar, mdiCameraRetakeOutline, mdiAccount, mdiBankOutline, mdiHeart, mdiBookmark, mdiBookmarkOutline, mdiMessageTextOutline, mdiCancel } from '@mdi/js'
 
 // VUEX
 import { mapGetters } from 'vuex'
@@ -102,6 +121,8 @@ export default {
     }
   },
   data: () => ({
+    messaging: false,
+    blockDialog: false,
     svg: {
       location: mdiMapMarker,
       calendar: mdiCalendar,
@@ -110,7 +131,9 @@ export default {
       party: mdiBankOutline,
       heart: mdiHeart,
       bookmarkFilled: mdiBookmark,
-      bookmarkOutline: mdiBookmarkOutline
+      bookmarkOutline: mdiBookmarkOutline,
+      message: mdiMessageTextOutline,
+      block: mdiCancel
     }
   }),
   methods: {
@@ -120,6 +143,20 @@ export default {
     partyTextColor,
     toggleBookmark () {
       this.$store.dispatch('TOGGLE_BOOKMARK', { userId: this.data.id, bookmarked: !!this.data.isBookmarked })
+    },
+    messageUser () {
+      this.messaging = true
+      this.$store.dispatch('START_CONVERSATION', this.data.id)
+        .then((conversation) => {
+          this.$router.push({ name: 'chat', params: { id: conversation.id } })
+        })
+        .catch(() => { this.messaging = false })
+    },
+    confirmBlock () {
+      this.blockDialog = false
+      this.$store.dispatch('BLOCK_USER', this.data.id).then(() => {
+        this.$router.push({ name: 'search' })
+      }).catch(() => {})
     },
     handleImageChange (event) {
       const image = event.target.files[0]

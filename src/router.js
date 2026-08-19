@@ -47,10 +47,22 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "dating" */ './views/Matches.vue')
     },
     {
-      path: '/matches/:id',
+      path: '/chats',
+      name: 'chats',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/Chats.vue')
+    },
+    {
+      path: '/chat/:id',
       name: 'chat',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "dating" */ './views/Chat.vue')
+    },
+    {
+      path: '/blocked',
+      name: 'blocked',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "dating" */ './views/BlockedUsers.vue')
     },
     {
       path: '/profile/:handle',
