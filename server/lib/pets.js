@@ -1,6 +1,10 @@
 const { v4: uuidv4 } = require('uuid')
 const db = require('../db')
 const { SPECIES, PURPOSES, GENDERS } = require('../constants/pets')
+const MAX_NAME_LENGTH = 50
+const MAX_BREED_LENGTH = 100
+const MAX_CITY_LENGTH = 100
+const MAX_BIO_LENGTH = 2000
 
 function computeAge (birthdate) {
   const birth = new Date(birthdate)
@@ -17,6 +21,8 @@ function validatePetInput (data) {
   const errors = []
   if (!data.name || String(data.name).trim().length < 1) {
     errors.push('Name des Tieres ist erforderlich.')
+  } else if (String(data.name).trim().length > MAX_NAME_LENGTH) {
+    errors.push(`Name des Tieres darf maximal ${MAX_NAME_LENGTH} Zeichen lang sein.`)
   }
   if (!SPECIES.includes(data.species)) {
     errors.push('Bitte gib die Tierart an (Hund oder Katze).')
@@ -31,6 +37,15 @@ function validatePetInput (data) {
   }
   if (!PURPOSES.includes(data.purpose)) {
     errors.push('Bitte gib an, wonach das Tier sucht (Zuchtpartner, Spielpartner oder beides).')
+  }
+  if (data.breed && String(data.breed).trim().length > MAX_BREED_LENGTH) {
+    errors.push(`Rasse darf maximal ${MAX_BREED_LENGTH} Zeichen lang sein.`)
+  }
+  if (data.city && String(data.city).trim().length > MAX_CITY_LENGTH) {
+    errors.push(`Wohnort darf maximal ${MAX_CITY_LENGTH} Zeichen lang sein.`)
+  }
+  if (data.bio && String(data.bio).trim().length > MAX_BIO_LENGTH) {
+    errors.push(`Beschreibung darf maximal ${MAX_BIO_LENGTH} Zeichen lang sein.`)
   }
   return errors
 }

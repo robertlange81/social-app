@@ -71,6 +71,12 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "matching" */ './views/BlockedUsers.vue')
     },
     {
+      path: '/settings',
+      name: 'settings',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "matching" */ './views/Settings.vue')
+    },
+    {
       path: '/pet/:id',
       name: 'pet-profile',
       meta: { requiresAuth: true },

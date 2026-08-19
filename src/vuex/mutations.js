@@ -1,14 +1,10 @@
 export default {
   // AUTH
-  SET_AUTHORIZATION: (state, token) => {
-    state.token = token
-  },
   SET_AUTH_USER: (state, user) => {
     state.authUser = user
   },
   SET_USER_UNAUTHENTICATED: (state) => {
     state.authUser = null
-    state.token = ''
     state.myPets = []
     state.activePetId = null
   },

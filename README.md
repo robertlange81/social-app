@@ -10,6 +10,8 @@ Halter möglich).
 
 ## Setup
 
+Voraussetzung: Node.js 20.10 oder neuer (`nvm use` liest `.nvmrc`).
+
 ### 1. Backend
 
 ```bash
@@ -48,6 +50,8 @@ und `npm run server:seed` einmalig).
   (`server/routes/conversations.js`)
 - Nutzer blockieren: blockierte Halter tauchen nicht mehr in Suche/Entdecken auf und können nicht
   mehr schreiben (`server/routes/blocks.js`)
+- Echtzeit-Chat via Server-Sent Events, Ungelesen-Zähler und paginierte Nachrichten
+- Nutzer melden sowie Datenschutzbereich mit Datenexport und vollständiger Accountlöschung
 - Suche mit Filtern (Art, Rasse, Zweck, Geschlecht, Alter, Ort), vorbelegt mit dem aktiven Tier
 - Merkliste, Profilbesucher, gesendete/erhaltene Likes
 - ~90 generierte Demo-Tiere mit prozedural erzeugten Comic-Avataren (`server/lib/avatarGenerator.js`)
@@ -57,3 +61,18 @@ und `npm run server:seed` einmalig).
 
 * Vue 2, Vuex, Vue Router, Vuetify 2
 * Node.js, Express, better-sqlite3, JWT, bcryptjs, multer, sharp
+
+## Qualität und Sicherheit
+
+```bash
+npm run lint
+npm run test:unit -- --runInBand
+npm run test:api
+npm run build
+```
+
+Die CI führt diese Prüfungen sowie Produktions-Dependency-Audits unter Node 20 aus. Sessions
+liegen in `HttpOnly`-/`SameSite`-Cookies, Helmet setzt Sicherheitsheader, Login und API sind
+rate-limitiert, CORS wird über `CORS_ORIGINS` eingeschränkt. Der Backend-Audit ist sauber.
+Vue 2/Vuetify 2 bleiben EOL und sollen in einem eigenen Migrationsprojekt durch Vue 3,
+Vuetify 3 und Vite ersetzt werden.

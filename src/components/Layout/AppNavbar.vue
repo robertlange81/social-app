@@ -69,6 +69,10 @@
                         <v-list-item-icon><v-icon>{{svg.block}}</v-icon></v-list-item-icon>
                         <v-list-item-title>Blockierte Nutzer</v-list-item-title>
                     </v-list-item>
+                    <v-list-item to="/settings">
+                        <v-list-item-icon><v-icon>{{svg.settings}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Datenschutz & Konto</v-list-item-title>
+                    </v-list-item>
                 </v-list>
             </v-menu>
 
@@ -98,7 +102,7 @@ import AppLogoutModal from '@/components/AppLogoutModal.vue'
 import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiCardsHeart, mdiForum, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline, mdiPaw, mdiMessageTextOutline, mdiCancel } from '@mdi/js'
+import { mdiCardsHeart, mdiForum, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline, mdiPaw, mdiMessageTextOutline, mdiCancel, mdiCogs } from '@mdi/js'
 
 export default {
   components: {
@@ -115,7 +119,8 @@ export default {
       bookmark: mdiBookmark,
       eye: mdiEyeOutline,
       chats: mdiMessageTextOutline,
-      block: mdiCancel
+      block: mdiCancel,
+      settings: mdiCogs
     }
   }),
   computed: {

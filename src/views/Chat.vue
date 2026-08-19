@@ -20,6 +20,9 @@
                                 <v-list-item @click="blockDialog = true">
                                     <v-list-item-title>Blockieren</v-list-item-title>
                                 </v-list-item>
+                                <v-list-item @click="reportDialog = true">
+                                    <v-list-item-title>Melden</v-list-item-title>
+                                </v-list-item>
                                 <v-list-item @click="deleteDialog = true">
                                     <v-list-item-title>Unterhaltung löschen</v-list-item-title>
                                 </v-list-item>
@@ -56,6 +59,18 @@
                     </v-card>
                 </v-dialog>
 
+                <v-dialog v-model="reportDialog" max-width="420">
+                    <v-card class="pa-4">
+                        <div class="title mb-3">Nutzer melden</div>
+                        <v-select v-model="reportReason" :items="reportReasons" label="Grund"></v-select>
+                        <v-textarea v-model="reportDetails" label="Details (optional)" counter="1000"></v-textarea>
+                        <div class="text-right">
+                            <v-btn text @click="reportDialog = false">Abbrechen</v-btn>
+                            <v-btn color="error" text :disabled="!reportReason" @click="confirmReport">Melden</v-btn>
+                        </div>
+                    </v-card>
+                </v-dialog>
+
                 <v-dialog v-model="blockDialog" max-width="360">
                     <v-card class="pa-4" v-if="conversation">
                         <div class="title mb-3">@{{conversation.otherUser.handle}} blockieren?</div>
@@ -77,15 +92,26 @@ import { mdiAccount, mdiDotsVertical } from '@mdi/js'
 import { mapGetters } from 'vuex'
 
 const API_ORIGIN = (process.env.VUE_APP_API_URL || 'http://localhost:4000/api/').replace(/\/api\/?$/, '')
-const POLL_INTERVAL_MS = 3000
+const FALLBACK_POLL_INTERVAL_MS = 30000
 
 export default {
   components: { AppChatWindow },
   data: () => ({
     newMessage: '',
     pollHandle: null,
+    eventSource: null,
     deleteDialog: false,
     blockDialog: false,
+    reportDialog: false,
+    reportReason: null,
+    reportDetails: '',
+    reportReasons: [
+      { text: 'Spam', value: 'spam' },
+      { text: 'Belästigung', value: 'harassment' },
+      { text: 'Fake-Profil', value: 'fake' },
+      { text: 'Rechtswidriger Inhalt', value: 'illegal' },
+      { text: 'Sonstiges', value: 'other' }
+    ],
     svg: { account: mdiAccount, more: mdiDotsVertical }
   }),
   computed: {
@@ -119,16 +145,32 @@ export default {
       this.$store.dispatch('BLOCK_USER', this.conversation.otherUser.id).then(() => {
         this.$router.push({ name: 'chats' })
       }).catch(() => {})
+    },
+    confirmReport () {
+      this.$store.dispatch('REPORT_USER', {
+        userId: this.conversation.otherUser.id,
+        reason: this.reportReason,
+        details: this.reportDetails
+      }).then(() => {
+        this.reportDialog = false
+        this.reportReason = null
+        this.reportDetails = ''
+      }).catch(() => {})
     }
   },
   created () {
     this.$store.dispatch('FETCH_CONVERSATION', this.conversationId)
     this.$store.dispatch('FETCH_CONVERSATION_MESSAGES', this.conversationId)
+    this.eventSource = new EventSource(`${API_ORIGIN}/api/conversations/${this.conversationId}/events`, { withCredentials: true })
+    this.eventSource.addEventListener('message', () => {
+      this.$store.dispatch('FETCH_CONVERSATION_MESSAGES', this.conversationId)
+    })
     this.pollHandle = setInterval(() => {
       this.$store.dispatch('FETCH_CONVERSATION_MESSAGES', this.conversationId)
-    }, POLL_INTERVAL_MS)
+    }, FALLBACK_POLL_INTERVAL_MS)
   },
   beforeDestroy () {
+    if (this.eventSource) this.eventSource.close()
     clearInterval(this.pollHandle)
   }
 }

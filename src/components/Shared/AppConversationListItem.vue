@@ -12,6 +12,7 @@
             <v-list-item-subtitle v-if="conversation.lastMessage">{{conversation.lastMessage.body}}</v-list-item-subtitle>
             <v-list-item-subtitle v-else class="font-italic">Noch keine Nachrichten</v-list-item-subtitle>
         </v-list-item-content>
+        <v-badge v-if="conversation.unreadCount" :content="conversation.unreadCount" color="error" inline></v-badge>
         <v-list-item-action-text v-if="conversation.lastMessage">
             {{conversation.lastMessage.createdAt | day}}
         </v-list-item-action-text>

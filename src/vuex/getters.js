@@ -1,5 +1,5 @@
 export default {
-  isAuthenticated: state => !!state.token,
+  isAuthenticated: state => !!state.authUser,
   authUser: state => state.authUser,
   errors: state => state.error,
   loadingUser: state => state.loading.user,

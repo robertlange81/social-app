@@ -65,7 +65,7 @@
         <v-dialog v-model="deleteDialog" max-width="360">
             <v-card class="pa-4" v-if="petToDelete">
                 <div class="title mb-3">{{petToDelete.name}} wirklich löschen?</div>
-                <div class="mb-4">Alle Matches, Chats und Likes zu diesem Tier werden ebenfalls gelöscht.</div>
+                <div class="mb-4">Alle Matches und Likes zu diesem Tier werden gelöscht. Unterhaltungen mit Haltern bleiben erhalten.</div>
                 <div class="text-right">
                     <v-btn text @click="deleteDialog = false">Abbrechen</v-btn>
                     <v-btn color="error" text @click="doDelete">Löschen</v-btn>

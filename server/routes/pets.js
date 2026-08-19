@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({
   storage,
-  limits: { fileSize: 20 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (!/^image\/(jpeg|png|webp|gif|heic|heif)$/.test(file.mimetype)) {
       return cb(new Error('Nur Bilddateien (JPG, PNG, WEBP, GIF) sind erlaubt.'))
@@ -36,7 +36,7 @@ const upload = multer({
 function handleUpload (req, res, next) {
   upload.single('image')(req, res, (err) => {
     if (err) {
-      if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Das Bild ist zu groß (maximal 20 MB).' })
+      if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Das Bild ist zu groß (maximal 10 MB).' })
       return res.status(400).json({ error: err.message || 'Bild-Upload fehlgeschlagen.' })
     }
     next()
@@ -129,10 +129,7 @@ router.delete('/:id', requireAuth, (req, res) => {
   const pet = getOwnPetOr404(req.params.id, req.user.id, res)
   if (!pet) return
 
-  const matchIds = db.prepare('SELECT id FROM matches WHERE pet_a_id = ? OR pet_b_id = ?').all(pet.id, pet.id).map(m => m.id)
-  for (const matchId of matchIds) {
-    db.prepare('DELETE FROM messages WHERE match_id = ?').run(matchId)
-  }
+  // Chats gehören den Haltern und bleiben wie beim Unmatch erhalten.
   db.prepare('DELETE FROM matches WHERE pet_a_id = ? OR pet_b_id = ?').run(pet.id, pet.id)
   db.prepare('DELETE FROM swipes WHERE from_pet_id = ? OR to_pet_id = ?').run(pet.id, pet.id)
   db.prepare('DELETE FROM bookmarks WHERE to_pet_id = ?').run(pet.id)
@@ -155,6 +152,9 @@ router.post('/:id/photo', requireAuth, handleUpload, async (req, res) => {
 
     const photoUrl = `/uploads/${cartoonFilename}`
     db.prepare('UPDATE pets SET photo_url = ? WHERE id = ?').run(photoUrl, pet.id)
+    if (pet.photo_url && pet.photo_url.startsWith('/uploads/') && pet.photo_url !== photoUrl) {
+      fs.unlink(path.join(uploadsDir, path.basename(pet.photo_url)), () => {})
+    }
     const updated = db.prepare('SELECT * FROM pets WHERE id = ?').get(pet.id)
     res.json({ pet: serializePet(updated) })
   } catch (err) {
