@@ -8,6 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "seed": "node seed.js",
+    "migrate:status": "node db/status.js",
     "test": "node --test test/*.test.js"
   },
   "dependencies": {

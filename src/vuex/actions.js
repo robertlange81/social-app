@@ -110,6 +110,7 @@ export default {
   },
   SWIPE: ({ commit }, { toUserId, direction }) => {
     commit('REMOVE_DISCOVER_PROFILE', toUserId)
+    commit('REMOVE_NEWEST_PROFILE', toUserId)
     return Api().post('swipes', { toUserId, direction })
       .then((res) => {
         commit('SET_LAST_MATCH_RESULT', res.data.matched ? res.data : null)
@@ -236,8 +237,8 @@ export default {
       .then((res) => commit('SET_CONVERSATION_MESSAGES', res.data.messages))
       .catch((error) => commit('SET_ERROR', extractError(error)))
   },
-  SEND_CONVERSATION_MESSAGE: ({ commit }, { conversationId, body }) => {
-    return Api().post(`conversations/${conversationId}/messages`, { body })
+  SEND_CONVERSATION_MESSAGE: ({ commit }, { conversationId, body, replyToId }) => {
+    return Api().post(`conversations/${conversationId}/messages`, { body, replyToId })
       .then((res) => {
         commit('ADD_CONVERSATION_MESSAGE', res.data.message)
         return res.data.message

@@ -73,6 +73,9 @@
                                     <v-icon left small>{{svg.message}}</v-icon>
                                     Nachricht senden
                                 </v-btn>
+                                <v-btn :to="{ name: 'resonance', query: { with: data.id } }" color="#E0E0E0" elevation="0">
+                                    <v-icon left small>{{svg.resonance}}</v-icon> Resonanz prüfen
+                                </v-btn>
                                 <v-btn color="#E0E0E0" elevation="0" @click="blockDialog = true">
                                     <v-icon left small>{{svg.block}}</v-icon>
                                     Blockieren
@@ -104,7 +107,7 @@ import AppEditProfile from '@/components/Profile/AppEditProfile.vue'
 import { PARTY_COLORS, partyTextColor, SEEKING_GENDERS } from '@/constants/parties'
 
 // SVG ICONS
-import { mdiMapMarker, mdiCalendar, mdiCameraRetakeOutline, mdiAccount, mdiBankOutline, mdiHeart, mdiBookmark, mdiBookmarkOutline, mdiMessageTextOutline, mdiCancel } from '@mdi/js'
+import { mdiMapMarker, mdiCalendar, mdiCameraRetakeOutline, mdiAccount, mdiBankOutline, mdiHeart, mdiBookmark, mdiBookmarkOutline, mdiMessageTextOutline, mdiCancel, mdiTune } from '@mdi/js'
 
 // VUEX
 import { mapGetters } from 'vuex'
@@ -133,7 +136,8 @@ export default {
       bookmarkFilled: mdiBookmark,
       bookmarkOutline: mdiBookmarkOutline,
       message: mdiMessageTextOutline,
-      block: mdiCancel
+      block: mdiCancel,
+      resonance: mdiTune
     }
   }),
   methods: {

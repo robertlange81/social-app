@@ -41,6 +41,19 @@ und `npm run server:seed` einmalig).
 - Hochgeladene Profilbilder werden automatisch serverseitig in einen Comic-Stil umgewandelt
   (kräftige Farben, geglättete Flächen, betonte Konturen - `server/lib/cartoonify.js`)
 - 100 generierte Demo-Profile mit prozedural erzeugten Comic-Avataren (`server/lib/avatarGenerator.js`)
+- Schnell-Likes direkt auf der Startseite samt Match-Dialog und Chat-Einstieg
+- Soziale Pinnwand mit Statusbeiträgen, Likes und „Anstupsen“; blockierte Nutzer bleiben ausgeblendet
+- Der Demo-Seed ergänzt zwölf Beispielbeiträge für eine sofort gefüllte Pinnwand
+- Resonanz-Check mit acht Situationsfragen und transparentem Profilvergleich
+- Community-Gruppen mit Mitgliedschaften und eigener Gruppen-Pinnwand
+- Chat-Antworten, Emoji-Reaktionen und gemeinsamer Date-Planer mit Zu-/Absage
+- Echtzeit-Benachrichtigungen für Likes, Matches, Nachrichten, Reaktionen, Anstupser und Dates
+- Chat-Suche, Tippen-Anzeige, Bearbeiten/Löschen und Kalenderexport (`.ics`)
+- Gewichtete oder private Resonanzantworten
+- Passwort-Reset, E-Mail-Bestätigung, Spam-/Linkschutz und auditierte Moderationsansicht
+- Installierbare PWA mit Offline-App-Shell und mobiler Bottom-Navigation
+- Sichere Bild- und Sprachnachrichten: Bildmetadaten werden entfernt, Dateien validiert und Bilder auf Wunsch erst nach bewusster Freigabe sichtbar
+- OpenLayers-/OpenStreetMap-Karte mit freiwilligen, auf ungefähr 1 km vergröberten Standorten und Umkreissuche
 - "Entdecken": Swipe-Deck (Ziehen per Maus/Touch oder Buttons) mit Like/Pass
 - Gegenseitiges Like erzeugt ein Match
 - Match-Liste, freie Unterhaltungen, Echtzeit-Chat via Server-Sent Events, Ungelesen-Zähler
@@ -49,6 +62,10 @@ und `npm run server:seed` einmalig).
 - Psychedelischer Hintergrund im gesamten UI (`src/assets/psychedelic-bg.svg`)
 
 ## Datenschutz-Hinweis
+
+Herzklang enthält öffentliche Seiten für Impressum, Datenschutz, Nutzungsbedingungen und Community-Regeln. Angemeldete Mitglieder verwalten unter `/settings` Benachrichtigungen, Dark Mode sowie versionierte Einwilligungen für politische Profildaten und Kartenanzeige. Ein Widerruf der politischen Einwilligung neutralisiert die Parteipräferenz und entfernt Resonanzdaten; Kartenfreigaben werden beim Widerruf sofort deaktiviert.
+
+Automatische Aufbewahrungsregeln entfernen gelesene Benachrichtigungen nach 90 Tagen, Profilbesuche nach 180 Tagen und verbrauchte oder abgelaufene Authentifizierungslinks nach sieben weiteren Tagen. Rechtstexte und Fristen müssen vor einem Produktivbetrieb anwaltlich sowie anhand des tatsächlichen Hostings und aller eingesetzten Auftragsverarbeiter geprüft werden.
 
 Die Partei-Angabe zählt als besondere Kategorie personenbezogener Daten (Art. 9 DSGVO).
 Registrierung verlangt daher eine separate, klar beschriftete Einwilligung dafür - unabhängig
@@ -78,6 +95,8 @@ Beim Branch-Wechsel keine Datenbank des anderen Datenmodells weiterverwenden. `m
 eine eigene, frisch geseedete Datenbank einsetzen.
 
 ## Entwicklung und Qualitätsprüfung
+
+Versionierte SQLite-Migrationen laufen beim Serverstart automatisch und erstellen vor offenen Änderungen an einer bestehenden Datenbank ein konsistentes Backup. Status, Erweiterungsregeln und Restore-Ablauf stehen in [`docs/MIGRATIONS.md`](docs/MIGRATIONS.md). Das Verfahren für Datenschutzanfragen, Dienstleister und Löschkontrolle steht in [`docs/PRIVACY_OPERATIONS.md`](docs/PRIVACY_OPERATIONS.md).
 
 ```bash
 npm run lint

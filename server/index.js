@@ -6,6 +6,7 @@ const crypto = require('crypto')
 const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const { rateLimit } = require('express-rate-limit')
+const { runRetentionCleanup } = require('./lib/retention')
 
 if (!process.env.JWT_SECRET) {
   if (process.env.NODE_ENV === 'production') throw new Error('JWT_SECRET muss in Produktion gesetzt sein.')
@@ -40,6 +41,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 const apiLimiter = rateLimit({ windowMs: 60 * 1000, limit: 180, standardHeaders: 'draft-8', legacyHeaders: false })
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: 'draft-8', legacyHeaders: false })
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
+app.use('/api/legal', require('./routes/legal'))
 app.use('/api', apiLimiter)
 app.use('/api/auth', authLimiter, require('./routes/auth'))
 app.use('/api/me', require('./routes/me'))
@@ -53,6 +55,12 @@ app.use('/api/likes', require('./routes/likes'))
 app.use('/api/conversations', require('./routes/conversations'))
 app.use('/api/blocks', require('./routes/blocks'))
 app.use('/api/reports', require('./routes/reports'))
+app.use('/api/feed', require('./routes/feed'))
+app.use('/api/pokes', require('./routes/pokes'))
+app.use('/api/resonance', require('./routes/resonance'))
+app.use('/api/groups', require('./routes/groups'))
+app.use('/api/notifications', require('./routes/notifications'))
+app.use('/api/moderation', require('./routes/moderation'))
 
 app.use((err, req, res, next) => {
   console.error(err)
@@ -61,6 +69,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 4000
 if (require.main === module) {
+  runRetentionCleanup()
   app.listen(PORT, () => console.log(`Partnerbörse-API läuft auf http://localhost:${PORT}`))
 }
 

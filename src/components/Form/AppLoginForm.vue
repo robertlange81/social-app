@@ -25,6 +25,7 @@
         <div class="subtitle1 text-center">
             <span>Noch kein Konto? <router-link class="cyan--text" to="/signup">Jetzt registrieren</router-link></span>
         </div>
+        <div class="subtitle1 text-center"><router-link class="cyan--text" to="/password-reset">Passwort vergessen?</router-link></div>
         <!-------------------------  END FORM ERRORS ------------------->
 
         <div class="mt-5">

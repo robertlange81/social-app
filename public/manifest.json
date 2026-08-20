@@ -1,0 +1,9 @@
+{
+  "name": "Herzklang",
+  "short_name": "Herzklang",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#170827",
+  "theme_color": "#32BCC3",
+  "description": "Dating, Resonanz und echte Begegnungen"
+}

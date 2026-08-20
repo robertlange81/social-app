@@ -9,6 +9,9 @@ import day from './filters/day'
 Vue.use(day)
 
 Vue.config.productionTip = false
+vuetify.framework.theme.dark = localStorage.getItem('herzklang-dark-mode') === 'true'
+
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') navigator.serviceWorker.register('/service-worker.js')
 
 store.dispatch('FETCH_AUTH_USER', { silent: true }).finally(() => {
   new Vue({

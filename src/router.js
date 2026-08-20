@@ -34,11 +34,35 @@ const router = new Router({
       beforeEnter: ifNotAuthenticated,
       component: () => import(/* webpackChunkName: "auth" */ './views/Signup.vue')
     },
+    { path: '/password-reset', name: 'password-reset', component: () => import(/* webpackChunkName: "auth" */ './views/PasswordReset.vue') },
+    { path: '/verify-email', name: 'verify-email', component: () => import(/* webpackChunkName: "auth" */ './views/VerifyEmail.vue') },
+    { path: '/impressum', name: 'imprint', component: () => import(/* webpackChunkName: "legal" */ './views/Imprint.vue') },
+    { path: '/datenschutz', name: 'privacy', component: () => import(/* webpackChunkName: "legal" */ './views/PrivacyPolicy.vue') },
+    { path: '/nutzungsbedingungen', name: 'terms', component: () => import(/* webpackChunkName: "legal" */ './views/Terms.vue') },
+    { path: '/community-regeln', name: 'guidelines', component: () => import(/* webpackChunkName: "legal" */ './views/CommunityGuidelines.vue') },
     {
       path: '/discover',
       name: 'discover',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "dating" */ './views/Discover.vue')
+    },
+    {
+      path: '/feed',
+      name: 'feed',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "social" */ './views/Feed.vue')
+    },
+    {
+      path: '/resonance',
+      name: 'resonance',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "social" */ './views/Resonance.vue')
+    },
+    {
+      path: '/groups',
+      name: 'groups',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "social" */ './views/Groups.vue')
     },
     {
       path: '/matches',
@@ -70,6 +94,7 @@ const router = new Router({
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "dating" */ './views/Settings.vue')
     },
+    { path: '/moderation', name: 'moderation', meta: { requiresAuth: true }, component: () => import(/* webpackChunkName: "social" */ './views/Moderation.vue') },
     {
       path: '/profile/:handle',
       name: 'profile',
@@ -82,6 +107,7 @@ const router = new Router({
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "dating" */ './views/Search.vue')
     },
+    { path: '/map', name: 'map', meta: { requiresAuth: true }, component: () => import(/* webpackChunkName: "map" */ './views/MapSearch.vue') },
     {
       path: '/bookmarks',
       name: 'bookmarks',

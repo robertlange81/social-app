@@ -10,6 +10,8 @@ module.exports = function requireAuth (req, res, next) {
     const payload = jwt.verify(token, process.env.JWT_SECRET)
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.sub)
     if (!user) return res.status(401).json({ error: 'Nutzer nicht gefunden.' })
+    const security = db.prepare('SELECT suspended_until FROM user_security WHERE user_id = ?').get(user.id)
+    if (security && security.suspended_until && new Date(security.suspended_until) > new Date()) return res.status(403).json({ error: 'Dieses Konto ist vorübergehend gesperrt.' })
     req.user = user
     next()
   } catch (err) {

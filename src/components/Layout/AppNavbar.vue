@@ -9,6 +9,15 @@
         <!--------------------------- END NAVBAR TITLE ---------------------------->
 
         <template v-if="isAuthenticated">
+            <AppNotifications class="mr-2"></AppNotifications>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn exact to="/feed" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
+                        <v-icon>{{svg.feed}}</v-icon>
+                    </v-btn>
+                </template>
+                <span>Pinnwand</span>
+            </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn exact to="/search" class="mr-2" elevation="0" color="#32BCC3" fab small v-on="on">
@@ -41,6 +50,15 @@
                     </v-btn>
                 </template>
                 <v-list>
+                    <v-list-item to="/groups">
+                        <v-list-item-icon><v-icon>{{svg.groups}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Community-Gruppen</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/map"><v-list-item-icon><v-icon>{{svg.map}}</v-icon></v-list-item-icon><v-list-item-title>Karte & Umkreis</v-list-item-title></v-list-item>
+                    <v-list-item to="/resonance">
+                        <v-list-item-icon><v-icon>{{svg.resonance}}</v-icon></v-list-item-icon>
+                        <v-list-item-title>Resonanz-Check</v-list-item-title>
+                    </v-list-item>
                     <v-list-item to="/matches">
                         <v-list-item-icon><v-icon>{{svg.matches}}</v-icon></v-list-item-icon>
                         <v-list-item-title>Matches</v-list-item-title>
@@ -92,16 +110,18 @@
 <script>
 // COMPONENTS
 import AppLogoutModal from '@/components/AppLogoutModal.vue'
+import AppNotifications from '@/components/Layout/AppNotifications.vue'
 
 // VUEX
 import { mapGetters } from 'vuex'
 
 // SVG ICONS
-import { mdiCardsHeart, mdiForum, mdiAccountCircle, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline, mdiMessageTextOutline, mdiCancel, mdiCogs } from '@mdi/js'
+import { mdiCardsHeart, mdiForum, mdiAccountCircle, mdiMagnify, mdiDotsVertical, mdiHeart, mdiBookmark, mdiEyeOutline, mdiMessageTextOutline, mdiCancel, mdiCogs, mdiViewStream, mdiAccountGroup, mdiTune, mdiMapMarkerRadius } from '@mdi/js'
 
 export default {
   components: {
-    AppLogoutModal
+    AppLogoutModal,
+    AppNotifications
   },
   data: () => ({
     svg: {
@@ -115,7 +135,11 @@ export default {
       eye: mdiEyeOutline,
       chats: mdiMessageTextOutline,
       block: mdiCancel,
-      settings: mdiCogs
+      settings: mdiCogs,
+      feed: mdiViewStream,
+      groups: mdiAccountGroup,
+      resonance: mdiTune,
+      map: mdiMapMarkerRadius
     }
   }),
   computed: {

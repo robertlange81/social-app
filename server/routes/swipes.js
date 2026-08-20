@@ -4,6 +4,7 @@ const db = require('../db')
 const requireAuth = require('../middleware/auth')
 const { serializeUser } = require('../lib/users')
 const { isBlocked, findOrCreateConversation } = require('../lib/conversations')
+const { createNotification } = require('../lib/notifications')
 
 const router = express.Router()
 
@@ -31,7 +32,10 @@ router.post('/', requireAuth, (req, res) => {
     SELECT * FROM swipes WHERE from_user_id = ? AND to_user_id = ? AND direction = 'like'
   `).get(toUserId, req.user.id)
 
-  if (!reciprocal) return res.json({ matched: false })
+  if (!reciprocal) {
+    createNotification({ userId: toUserId, actorId: req.user.id, type: 'like', title: 'Du hast ein neues Like erhalten', link: '/likes' })
+    return res.json({ matched: false })
+  }
 
   const [userA, userB] = [req.user.id, toUserId].sort()
   db.prepare(`
@@ -40,6 +44,7 @@ router.post('/', requireAuth, (req, res) => {
 
   const match = db.prepare('SELECT * FROM matches WHERE user_a_id = ? AND user_b_id = ?').get(userA, userB)
   const conversation = findOrCreateConversation(req.user.id, toUserId)
+  createNotification({ userId: toUserId, actorId: req.user.id, type: 'match', title: `Match mit ${req.user.handle}!`, link: `/chat/${conversation.id}` })
   res.json({ matched: true, matchId: match.id, conversationId: conversation.id, otherUser: serializeUser(target) })
 })
 

@@ -8,6 +8,11 @@
             :key="message.id"
             :message="message"
             :is-own="message.senderId === authUserId"
+            @reply="$emit('reply', message)"
+            @react="emoji => $emit('react', { message, emoji })"
+            @edit="$emit('edit', message)"
+            @delete="$emit('delete', message)"
+            @approve="$emit('approve', { message, attachment: $event })"
         ></AppChatMessage>
     </div>
 </template>

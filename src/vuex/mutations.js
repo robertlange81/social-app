@@ -14,6 +14,9 @@ export default {
   REMOVE_DISCOVER_PROFILE: (state, userId) => {
     state.discoverProfiles = state.discoverProfiles.filter(p => p.id !== userId)
   },
+  REMOVE_NEWEST_PROFILE: (state, userId) => {
+    state.newestProfiles = state.newestProfiles.filter(p => p.id !== userId)
+  },
   SET_NEWEST_PROFILES: (state, profiles) => {
     state.newestProfiles = profiles
   },

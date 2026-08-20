@@ -27,7 +27,9 @@
                 <div class="mt-4">
                     <v-btn type="submit" color="#32BCC3" dark elevation="0" :loading="loadingUI">Suchen</v-btn>
                     <v-btn text class="ml-2" @click="resetFilters">Filter zurücksetzen</v-btn>
+                    <v-btn text to="/map" color="#168890"><v-icon left>{{svg.map}}</v-icon>Karte</v-btn>
                 </div>
+                <v-row dense class="mt-2"><v-col cols="12" sm="4"><v-select v-model="filters.radiusKm" :items="radiusOptions" label="Optionaler Umkreis" suffix="km" clearable hide-details></v-select></v-col><v-col cols="12" sm="8" class="caption d-flex align-center">Der Umkreis funktioniert nach freiwilliger Standortfreigabe auf der Karte.</v-col></v-row>
             </v-form>
         </div>
 
@@ -55,7 +57,7 @@
 <script>
 import AppProfileCard from '@/components/Discover/AppProfileCard.vue'
 import { PARTIES, GENDERS } from '@/constants/parties'
-import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
+import { mdiChevronLeft, mdiChevronRight, mdiMapMarkerRadius } from '@mdi/js'
 import { mapGetters } from 'vuex'
 
 const PAGE_SIZE = 24
@@ -63,12 +65,13 @@ const PAGE_SIZE = 24
 export default {
   components: { AppProfileCard },
   data: () => ({
-    filters: { q: '', city: '', gender: null, party: null, minAge: null, maxAge: null },
+    filters: { q: '', city: '', gender: null, party: null, minAge: null, maxAge: null, radiusKm: null },
     page: 1,
     searched: false,
     parties: PARTIES,
     genderOptions: GENDERS,
-    svg: { prev: mdiChevronLeft, next: mdiChevronRight }
+    radiusOptions: [10, 25, 50, 100, 250, 500],
+    svg: { prev: mdiChevronLeft, next: mdiChevronRight, map: mdiMapMarkerRadius }
   }),
   computed: {
     ...mapGetters(['searchResults', 'searchTotal', 'loadingUI', 'authUser']),
@@ -86,7 +89,7 @@ export default {
     defaultFilters () {
       const gender = (this.authUser && this.authUser.seekingGender !== 'all') ? this.authUser.seekingGender : null
       const city = (this.authUser && this.authUser.city) || ''
-      return { q: '', city, gender, party: null, minAge: null, maxAge: null }
+      return { q: '', city, gender, party: null, minAge: null, maxAge: null, radiusKm: null }
     },
     runSearch () {
       this.page = 1
