@@ -20,6 +20,15 @@ npm run seed   # legt 100 Demo-Profile mit generierten Comic-Avataren an (Login:
 npm run dev    # startet die API auf http://localhost:4000
 ```
 
+Für einen besonders schnellen reproduzierbaren Test liegt zusätzlich eine fertig befüllte SQLite-Fixture unter `server/test/fixtures/demo.sqlite`. Kopiere sie in eine eigene Laufzeitdatei, damit die versionierte Fixture unverändert bleibt:
+
+```bash
+cp server/test/fixtures/demo.sqlite server/data/demo.sqlite
+DB_PATH=server/data/demo.sqlite npm run server
+```
+
+Alle 100 Konten verwenden ausschließlich `example.com`-Adressen und das Passwort `password123`. Die Fixture enthält keine lokalen Benutzerkonten.
+
 ### 2. Frontend
 
 Im Projekt-Root (in einem zweiten Terminal):
