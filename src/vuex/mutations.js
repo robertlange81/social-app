@@ -34,6 +34,9 @@ export default {
   REMOVE_DISCOVER_PET: (state, petId) => {
     state.discoverPets = state.discoverPets.filter(p => p.id !== petId)
   },
+  REMOVE_NEWEST_PET: (state, petId) => {
+    state.newestPets = state.newestPets.filter(p => p.id !== petId)
+  },
   SET_NEWEST_PETS: (state, pets) => {
     state.newestPets = pets
   },

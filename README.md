@@ -45,6 +45,7 @@ und `npm run server:seed` einmalig).
 - "Entdecken": Swipe-Deck pro aktivem Tier, Matching-Logik nach Art, Zweck-Überschneidung und
   (bei reinem Zuchtwunsch) Geschlecht (`server/routes/discover.js`)
 - Gegenseitiges Like erzeugt ein Match zwischen zwei Tieren
+- Schnell-Likes direkt auf der Startseite samt Match-Dialog und Chat-Einstieg
 - **Chat ist nicht an ein Match gebunden**: Über jedes Tierprofil kann direkt eine Unterhaltung mit
   dem Halter gestartet werden ("Nachricht senden"), unabhängig vom Swipe-Status
   (`server/routes/conversations.js`)

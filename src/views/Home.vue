@@ -45,22 +45,48 @@
             </div>
 
             <div v-else class="card-grid">
-                <router-link v-for="pet in newestPets" :key="pet.id" :to="`/pet/${pet.id}`" style="text-decoration: none;">
-                    <AppPetCard :pet="pet" show-bookmark @toggle-bookmark="onToggleBookmark"></AppPetCard>
-                </router-link>
+                <div v-for="pet in newestPets" :key="pet.id" class="quick-like-card">
+                    <router-link :to="`/pet/${pet.id}`" style="text-decoration: none;">
+                        <AppPetCard :pet="pet" show-bookmark @toggle-bookmark="onToggleBookmark"></AppPetCard>
+                    </router-link>
+                    <div class="d-flex pa-2 white">
+                        <v-btn icon color="#757575" :aria-label="`${pet.name} überspringen`" @click="quickSwipe(pet, 'pass')">
+                            <v-icon>{{svg.close}}</v-icon>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn rounded color="#32BCC3" dark elevation="0" @click="quickSwipe(pet, 'like')">
+                            <v-icon left>{{svg.heart}}</v-icon> Gefällt mir
+                        </v-btn>
+                    </div>
+                </div>
             </div>
         </template>
+
+        <v-dialog v-model="showMatchDialog" max-width="380" persistent>
+            <v-card v-if="lastMatchResult" class="text-center pa-6">
+                <div class="headline font-weight-bold text-secundario mb-2">Es ist ein Match! 🎉</div>
+                <div class="mb-4">{{activePet ? activePet.name : 'Dein Tier'}} und {{lastMatchResult.otherPet.name}} passen zusammen.</div>
+                <v-btn color="#32BCC3" dark elevation="0" class="mr-2" @click="goToChat">Chat öffnen</v-btn>
+                <v-btn color="#E0E0E0" elevation="0" @click="closeMatchDialog">Weiter</v-btn>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
 import AppPetCard from '@/components/Discover/AppPetCard.vue'
 import { mapGetters } from 'vuex'
+import { mdiClose, mdiHeart } from '@mdi/js'
 
 export default {
   components: { AppPetCard },
+  data: () => ({ svg: { close: mdiClose, heart: mdiHeart } }),
   computed: {
-    ...mapGetters(['isAuthenticated', 'myPets', 'activePet', 'newestPets', 'loadingUI'])
+    ...mapGetters(['isAuthenticated', 'myPets', 'activePet', 'newestPets', 'loadingUI', 'lastMatchResult']),
+    showMatchDialog: {
+      get () { return !!this.lastMatchResult },
+      set (value) { if (!value) this.closeMatchDialog() }
+    }
   },
   created () {
     if (this.isAuthenticated) this.loadNewest()
@@ -76,7 +102,27 @@ export default {
     },
     onToggleBookmark (pet) {
       this.$store.dispatch('TOGGLE_BOOKMARK', { petId: pet.id, bookmarked: !!pet.isBookmarked })
+    },
+    quickSwipe (pet, direction) {
+      if (!this.activePet) return
+      this.$store.dispatch('SWIPE', { fromPetId: this.activePet.id, toPetId: pet.id, direction })
+    },
+    closeMatchDialog () {
+      this.$store.dispatch('CLEAR_MATCH_RESULT')
+    },
+    goToChat () {
+      const conversationId = this.lastMatchResult.conversationId
+      this.closeMatchDialog()
+      this.$router.push({ name: 'chat', params: { id: conversationId } })
     }
   }
 }
 </script>
+
+<style scoped>
+.quick-like-card {
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+}
+</style>

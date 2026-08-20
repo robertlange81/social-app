@@ -161,6 +161,7 @@ export default {
   },
   SWIPE: ({ commit }, { fromPetId, toPetId, direction }) => {
     commit('REMOVE_DISCOVER_PET', toPetId)
+    commit('REMOVE_NEWEST_PET', toPetId)
     return Api().post('swipes', { fromPetId, toPetId, direction })
       .then((res) => {
         commit('SET_LAST_MATCH_RESULT', res.data.matched ? res.data : null)
